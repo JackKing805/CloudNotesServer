@@ -57,8 +57,6 @@ class ServerService: Service() {
     override fun onCreate() {
         super.onCreate()
         defaultStatus = RtCoreListener.Status.INIT
-
-        RequestDelegator
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

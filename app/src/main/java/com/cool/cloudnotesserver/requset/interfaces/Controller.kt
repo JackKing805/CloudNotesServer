@@ -1,7 +1,9 @@
 package com.cool.cloudnotesserver.requset.interfaces
 
+
 @Target(AnnotationTarget.CLASS,AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class Controller(
-    val value:String
+    val value:String,
+    val requestMethod:RequestMethod = RequestMethod.GET
 )

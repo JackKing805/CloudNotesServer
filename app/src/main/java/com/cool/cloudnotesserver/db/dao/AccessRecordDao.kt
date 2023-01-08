@@ -16,8 +16,8 @@ interface AccessRecordDao {
     fun listAsFlow():Flow<List<AccessRecord>>
 
     @Insert
-    fun insert(bookRule : AccessRecord)
+    fun insert(accessRecord : AccessRecord)
 
     @Delete
-    fun delete(bookRule: AccessRecord)
+    fun delete(accessRecord: AccessRecord)
 }

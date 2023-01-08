@@ -5,9 +5,11 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.cool.cloudnotesserver.ServerApp
 import com.cool.cloudnotesserver.db.dao.AccessRecordDao
+import com.cool.cloudnotesserver.db.dao.UserDao
 import com.cool.cloudnotesserver.db.entity.AccessRecord
+import com.cool.cloudnotesserver.db.entity.User
 
-@Database(entities = [AccessRecord::class], version = 1, exportSchema = false)
+@Database(entities = [AccessRecord::class, User::class], version = 2, exportSchema = false)
 abstract class ServerRoom : RoomDatabase() {
     companion object {
         val instance by lazy {
@@ -18,4 +20,5 @@ abstract class ServerRoom : RoomDatabase() {
     }
 
     abstract fun getAccessRecordDao():AccessRecordDao
+    abstract fun getUserDao():UserDao
 }
