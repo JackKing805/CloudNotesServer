@@ -7,6 +7,7 @@ import com.cool.cloudnotesserver.db.ServerRoom
 import com.cool.cloudnotesserver.db.entity.User
 import com.cool.cloudnotesserver.extensions.log
 import com.cool.cloudnotesserver.extensions.toObject
+import com.cool.cloudnotesserver.requset.bean.ParameterBean
 import com.cool.cloudnotesserver.requset.interfaces.Controller
 import com.cool.cloudnotesserver.requset.interfaces.RequestMethod
 import com.cool.cloudnotesserver.requset.model.ResponseMessage
@@ -21,16 +22,13 @@ class RootController {
     @Controller("/favicon.ico")
     fun onIconRequest(context: Context, request: Request, response: Response):File {
         "onIconRequest".log()
-        return File(
-            Environment.getExternalStorageDirectory().absolutePath + File.separatorChar + "DCIM" + File.separatorChar + "Camera" + File.separatorChar + "icon.jpg",
-            "image/x-icon"
-        )
+        return File(Environment.getExternalStorageDirectory().absolutePath + File.separatorChar + "DCIM" + File.separatorChar + "Camera" + File.separatorChar + "icon.jpg")
     }
 
     @Controller("/")
     fun onRootRequest(context: Context, request: Request, response: Response):String {
         "onRootRequest".log()
-        return "Note Server"
+        return "index.html"
     }
 
     data class UserRequest(
@@ -39,7 +37,7 @@ class RootController {
     )
 
     @Controller(value = "/login",requestMethod = RequestMethod.POST, isRest = true)
-    fun onLoginRequest(context: Context, request: Request, response: Response,userRequest: UserRequest?):ResponseMessage{
+    fun onLoginRequest(context: Context, request: Request, response: Response,userRequest: UserRequest?,parameterBean: ParameterBean):ResponseMessage{
         "onLoginRequest".log()
 
         if (userRequest==null){

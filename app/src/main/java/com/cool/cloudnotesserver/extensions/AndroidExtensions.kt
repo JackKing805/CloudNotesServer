@@ -11,9 +11,9 @@ fun String.fromAssets(): String {
     val stringBuilder = StringBuilder()
     BufferedReader(InputStreamReader(ServerApp.app.assets.open(this))).use {
         var line = ""
-        while (it.readLine().also { r->
-                line = r
-            } != null) {
+        while (it.readLine().also { r-> r?.let {
+                line = it
+            } } != null) {
             stringBuilder.append(line)
         }
     }
