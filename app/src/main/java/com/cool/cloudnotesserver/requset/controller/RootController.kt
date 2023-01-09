@@ -2,13 +2,10 @@ package com.cool.cloudnotesserver.requset.controller
 
 import android.content.Context
 import android.os.Environment
-import com.blankj.utilcode.util.GsonUtils
 import com.blankj.utilcode.util.SPUtils
 import com.cool.cloudnotesserver.db.ServerRoom
 import com.cool.cloudnotesserver.db.entity.User
 import com.cool.cloudnotesserver.extensions.log
-import com.cool.cloudnotesserver.extensions.parameterToArray
-import com.cool.cloudnotesserver.extensions.toKotlinString
 import com.cool.cloudnotesserver.extensions.toObject
 import com.cool.cloudnotesserver.requset.interfaces.Controller
 import com.cool.cloudnotesserver.requset.interfaces.RequestMethod
@@ -22,38 +19,36 @@ import java.util.UUID
 @Controller("/")
 class RootController {
     @Controller("/favicon.ico")
-    fun onIconRequest(context: Context, request: Request, response: Response) {
+    fun onIconRequest(context: Context, request: Request, response: Response):File {
         "onIconRequest".log()
-        response.writeFile(
+        return File(
             Environment.getExternalStorageDirectory().absolutePath + File.separatorChar + "DCIM" + File.separatorChar + "Camera" + File.separatorChar + "icon.jpg",
             "image/x-icon"
         )
     }
 
     @Controller("/")
-    fun onRootRequest(context: Context, request: Request, response: Response) {
+    fun onRootRequest(context: Context, request: Request, response: Response):String {
         "onRootRequest".log()
-        response.write("Note Server", "text/plain")
+        return "Note Server"
     }
 
-    private data class UserRequest(
+    data class UserRequest(
         val username:String,
         val password:String
     )
 
-    @Controller("/login", requestMethod = RequestMethod.POST)
-    fun onLoginRequest(context: Context, request: Request, response: Response){
+    @Controller(value = "/login",requestMethod = RequestMethod.POST, isRest = true)
+    fun onLoginRequest(context: Context, request: Request, response: Response,userRequest: UserRequest?):ResponseMessage{
         "onLoginRequest".log()
 
-        val userRequest = request.getBody().toObject<UserRequest>()
         if (userRequest==null){
-            response.write(ResponseMessage.error("need login parameter"),RtContentType.JSON.content)
-            return
+            return ResponseMessage.error("need login parameter")
         }
         val userDao = ServerRoom.instance.getUserDao()
         val findByUserName = userDao.findByUserName(userRequest.username)
         if (findByUserName==null){
-            response.write(ResponseMessage.error("username not exits"),RtContentType.JSON.content)
+            return ResponseMessage.error("username not exits")
         }else{
             if (findByUserName.password==userRequest.password){
                 val cacheToken = SPUtils.getInstance().getString(findByUserName.username, "")
@@ -61,29 +56,25 @@ class RootController {
                     UUID.randomUUID().toString()
                 }
                 SPUtils.getInstance().put(findByUserName.username,token)
-                response.write(ResponseMessage.ok("login success",token),RtContentType.JSON.content)
+                return ResponseMessage.ok("login success",token)
             }else{
-                response.write(ResponseMessage.error("username or password not correct"),RtContentType.JSON.content)
+                return ResponseMessage.error("username or password not correct")
             }
         }
     }
 
-    @Controller("/register", requestMethod = RequestMethod.POST)
-    fun onRegisterRequest(context: Context, request: Request, response: Response){
+    @Controller(value = "/register",requestMethod = RequestMethod.POST, isRest = true)
+    fun onRegisterRequest(context: Context, request: Request, response: Response):ResponseMessage{
         "onRegisterRequest".log()
 
-        val userRequest = request.getBody().toObject<UserRequest>()
-        if (userRequest==null){
-            response.write(ResponseMessage.error("need login parameter"),RtContentType.JSON.content)
-            return
-        }
+        val userRequest = request.getBody().toObject<UserRequest>() ?: return ResponseMessage.error("need login parameter")
         val userDao = ServerRoom.instance.getUserDao()
         val findByUserName = userDao.findByUserName(userRequest.username)
         if (findByUserName==null){
             userDao.insert(User(username = userRequest.username, password = userRequest.password, nickName = "CloudNote User"))
-            response.write(ResponseMessage.ok("register success"),RtContentType.JSON.content)
+            return ResponseMessage.ok("register success")
         }else{
-            response.write(ResponseMessage.error("username is already be use,please change your username"),RtContentType.JSON.content)
+            return ResponseMessage.error("username is already be use,please change your username")
         }
     }
 }

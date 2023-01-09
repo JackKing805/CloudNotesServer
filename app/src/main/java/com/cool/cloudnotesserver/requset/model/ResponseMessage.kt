@@ -12,8 +12,8 @@ data class ResponseMessage(
     }
 
     companion object {
-        fun create(code: Int, message: String, data: Any? = null): String {
-            return ResponseMessage(code, message, data).toJson()
+        fun create(code: Int, message: String, data: Any? = null): ResponseMessage {
+            return ResponseMessage(code, message, data)
         }
 
         fun error() = create(-200, "error")

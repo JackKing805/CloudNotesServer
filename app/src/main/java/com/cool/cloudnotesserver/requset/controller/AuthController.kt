@@ -11,9 +11,9 @@ import com.jerry.rt.core.http.protocol.RtContentType
 
 //需要认证才能访问的controller
 
-@Controller("/auth")
+@Controller()
 class AuthController {
-    @Controller("/file")
+    @Controller()
     fun onFileRequest(context: Context, request: Request, response: Response) {
         "onFileRequest".log()
         val requestURI = request.getPackage().getRequestURI()

@@ -10,3 +10,10 @@ inline fun <reified T> ByteArray.toObject() = try {
     e.printStackTrace()
     null
 }
+
+fun <T> ByteArray.toObject(clazz: Class<T>) = try {
+    GsonUtils.fromJson(toKotlinString(),clazz)
+}catch (e:Exception){
+    e.printStackTrace()
+    null
+}
