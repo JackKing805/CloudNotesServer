@@ -7,15 +7,3 @@ import com.cool.cloudnotesserver.ServerApp
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
-fun String.fromAssets(): String {
-    val stringBuilder = StringBuilder()
-    BufferedReader(InputStreamReader(ServerApp.app.assets.open(this))).use {
-        var line = ""
-        while (it.readLine().also { r-> r?.let {
-                line = it
-            } } != null) {
-            stringBuilder.append(line)
-        }
-    }
-    return stringBuilder.toString()
-}

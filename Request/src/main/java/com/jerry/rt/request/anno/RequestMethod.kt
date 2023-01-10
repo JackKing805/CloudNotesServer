@@ -1,4 +1,4 @@
-package com.cool.cloudnotesserver.requset.interfaces
+package com.jerry.rt.request.anno
 
 enum class RequestMethod(val content:String) {
     GET("GET"),

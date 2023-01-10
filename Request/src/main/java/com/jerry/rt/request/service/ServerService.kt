@@ -1,4 +1,4 @@
-package com.cool.cloudnotesserver.background
+package com.jerry.rt.request.service
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -12,24 +12,22 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.blankj.utilcode.util.UiMessageUtils
-import com.cool.cloudnotesserver.R
-import com.cool.cloudnotesserver.db.ServerRoom
-import com.cool.cloudnotesserver.db.entity.AccessRecord
-import com.cool.cloudnotesserver.extensions.log
-import com.cool.cloudnotesserver.requset.RequestDelegator
 import com.jerry.rt.bean.RtConfig
 import com.jerry.rt.core.RtCore
 import com.jerry.rt.core.http.Client
 import com.jerry.rt.core.http.interfaces.ClientListener
 import com.jerry.rt.core.http.pojo.Request
 import com.jerry.rt.core.http.pojo.Response
-import com.jerry.rt.core.http.response.impl.StringResponseWriter
 import com.jerry.rt.interfaces.RtCoreListener
+import com.jerry.rt.request.RequestUtils
+import com.jerry.rt.request.constants.Status
+import com.jerry.rt.request.delegator.RequestDelegator
+import com.jerry.rt.request.extensions.log
 import java.io.InputStream
 import java.lang.Exception
 import kotlin.concurrent.thread
 
-class ServerService: Service() {
+internal class ServerService: Service() {
     companion object{
         fun run(context: Context,run:Boolean){
             ContextCompat.startForegroundService(context,Intent(context,ServerService::class.java).apply {
@@ -42,11 +40,10 @@ class ServerService: Service() {
     set(value) {
         value?.let {
             updateNotification(it)
-            UiMessageUtils.getInstance().send(1,value)
-        }?: kotlin.run {
-            UiMessageUtils.getInstance().send(2)
+            RequestUtils.getIRequestListener()?.onStatusChange(Status.rtStatusToStats(it))
+        }?:run {
+            RequestUtils.getIRequestListener()?.onStatusChange(Status.rtStatusToStats(null))
         }
-
         field = value
     }
 
@@ -56,7 +53,8 @@ class ServerService: Service() {
 
     override fun onCreate() {
         super.onCreate()
-        defaultStatus = RtCoreListener.Status.INIT
+        defaultStatus = null
+        updateNotification(RtCoreListener.Status.STOPPED)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -91,14 +89,6 @@ class ServerService: Service() {
                             response: Response
                         ) {
                             "onMessage".log()
-                            ServerRoom.instance.getAccessRecordDao().insert(AccessRecord(url = request.getPackage().url))
-//                            response.getResponseWrite(StringResponseWriter::class).apply {
-//                                writeFirstLine(request.getProtocol(),200,"success")
-//                                writeHeader("Content-Type","text/html")
-//                                writeHeader("Content-Length", "hallo from note server".length)
-//                                writeBody("hallo from note server")
-//                                endWrite()
-//                            }
                             RequestDelegator.dispatcher(this@ServerService,request,response)
                         }
 
@@ -117,7 +107,7 @@ class ServerService: Service() {
                     "onStatusChange:$status".log()
                     defaultStatus = status
 
-                    if (status==RtCoreListener.Status.STOPPED){
+                    if (defaultStatus==RtCoreListener.Status.STOPPED){
                         defaultStatus = null
                     }
                 }
@@ -131,18 +121,17 @@ class ServerService: Service() {
 
     private fun updateNotification(status:RtCoreListener.Status){
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
-            val channel = NotificationChannel("Server","Server",NotificationManager.IMPORTANCE_DEFAULT)
-            channel.enableLights(false)
-            channel.enableVibration(false)
-            channel.setSound(null,null)
-            channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
-            manager.createNotificationChannel(channel)
-        }
+        val channel = NotificationChannel("Server","Server",NotificationManager.IMPORTANCE_DEFAULT)
+        channel.enableLights(false)
+        channel.enableVibration(false)
+        channel.setSound(null,null)
+        channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+        manager.createNotificationChannel(channel)
 
+        val config = RequestUtils.getConfig()
         val notification = NotificationCompat.Builder(this,"Server")
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setLargeIcon(BitmapFactory.decodeResource(resources,R.drawable.ic_launcher_foreground))
+            .setSmallIcon(config.appIcon)
+            .setLargeIcon(BitmapFactory.decodeResource(resources,config.appIcon))
             .setWhen(System.currentTimeMillis())
             .setContentTitle("Server Status")
             .setContentText(status.name)

@@ -5,15 +5,15 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.UiMessageUtils
-import com.cool.cloudnotesserver.ServerApp
-import com.cool.cloudnotesserver.background.ServerService
 import com.cool.cloudnotesserver.db.ServerRoom
-import com.cool.cloudnotesserver.db.dao.AccessRecordDao
 import com.cool.cloudnotesserver.db.entity.AccessRecord
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
 import com.jerry.rt.interfaces.RtCoreListener
+import com.jerry.rt.request.RequestUtils
+import com.jerry.rt.request.constants.Status
+import com.jerry.rt.request.interfaces.IRequestListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
@@ -25,17 +25,16 @@ class MainViewModel(application: Application):AndroidViewModel(application) {
 
     val mainStatus = _mainUIStatus
 
-    private val uiMessage = UiMessageUtils.UiMessageCallback {
-        if(it.id==1){
-            val newStatus = it.`object` as RtCoreListener.Status
-            _mainUIStatus.value = _mainUIStatus.value.copy(serverStatus = newStatus)
-        }else if (it.id==2){
-            _mainUIStatus.value = _mainUIStatus.value.copy(serverStatus = null)
-        }
-    }
-
     init {
-        UiMessageUtils.getInstance().addListener(uiMessage)
+        RequestUtils.listen(object :IRequestListener{
+            override fun onStatusChange(status: Status) {
+                _mainUIStatus.value = _mainUIStatus.value.copy(serverStatus = status)
+            }
+
+            override fun onRequest(url: String) {
+                ServerRoom.instance.getAccessRecordDao().insert(AccessRecord(url = url))
+            }
+        })
         viewModelScope.launch(Dispatchers.IO) {
             val accessRecordDao = ServerRoom.instance.getAccessRecordDao()
             accessRecordDao.listAsFlow().onEach {
@@ -46,7 +45,7 @@ class MainViewModel(application: Application):AndroidViewModel(application) {
 
 
     override fun onCleared() {
-        UiMessageUtils.getInstance().removeListener(uiMessage)
+
     }
 
     private var isToggle = false
@@ -61,10 +60,13 @@ class MainViewModel(application: Application):AndroidViewModel(application) {
                 override fun onGranted(permissions: MutableList<String>?, all: Boolean) {
                     isToggle = false
                     if (all){
-                        mainStatus.value.serverStatus?.let {
-                            ServerService.run(getApplication(),false)
-                        }?: kotlin.run {
-                            ServerService.run(getApplication(),true)
+                        when (mainStatus.value.serverStatus){
+                            Status.STOPPED -> {
+                                RequestUtils.startServer()
+                            }
+                            Status.RUNNING -> {
+                                RequestUtils.stopServer()
+                            }
                         }
                     }
                 }
@@ -79,6 +81,6 @@ class MainViewModel(application: Application):AndroidViewModel(application) {
 
 
 data class MainUiState(
-    val serverStatus:RtCoreListener.Status?=null,
+    val serverStatus: Status = Status.STOPPED,
     val accessRecordList:MutableList<AccessRecord> = mutableListOf()
 )

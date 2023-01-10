@@ -6,29 +6,23 @@ import com.blankj.utilcode.util.SPUtils
 import com.cool.cloudnotesserver.db.ServerRoom
 import com.cool.cloudnotesserver.db.entity.User
 import com.cool.cloudnotesserver.extensions.log
-import com.cool.cloudnotesserver.extensions.toObject
-import com.cool.cloudnotesserver.requset.bean.ParameterBean
-import com.cool.cloudnotesserver.requset.interfaces.Controller
-import com.cool.cloudnotesserver.requset.interfaces.RequestMethod
-import com.cool.cloudnotesserver.requset.model.ResponseMessage
 import com.jerry.rt.core.http.pojo.Request
 import com.jerry.rt.core.http.pojo.Response
-import com.jerry.rt.core.http.protocol.RtContentType
+import com.jerry.rt.request.anno.Controller
+import com.jerry.rt.request.anno.RequestMethod
+import com.jerry.rt.request.bean.ParameterBean
+import com.jerry.rt.request.constants.FileType
+import com.jerry.rt.request.extensions.toObject
+import com.cool.cloudnotesserver.requset.model.ResponseMessage
 import java.io.File
 import java.util.UUID
 
 @Controller("/")
 class RootController {
-    @Controller("/favicon.ico")
-    fun onIconRequest(context: Context, request: Request, response: Response):File {
-        "onIconRequest".log()
-        return File(Environment.getExternalStorageDirectory().absolutePath + File.separatorChar + "DCIM" + File.separatorChar + "Camera" + File.separatorChar + "icon.jpg")
-    }
-
     @Controller("/")
     fun onRootRequest(context: Context, request: Request, response: Response):String {
-        "onRootRequest".log()
-        return "index.html"
+        "onRootRequest:${Thread.currentThread()}".log()
+        return FileType.ASSETS.content + "index.html"
     }
 
     data class UserRequest(
@@ -37,8 +31,8 @@ class RootController {
     )
 
     @Controller(value = "/login",requestMethod = RequestMethod.POST, isRest = true)
-    fun onLoginRequest(context: Context, request: Request, response: Response,userRequest: UserRequest?,parameterBean: ParameterBean):ResponseMessage{
-        "onLoginRequest".log()
+    fun onLoginRequest(context: Context, request: Request, response: Response, userRequest: UserRequest?, parameterBean: ParameterBean): ResponseMessage {
+        "onLoginRequest:${Thread.currentThread()}".log()
 
         if (userRequest==null){
             return ResponseMessage.error("need login parameter")
@@ -62,7 +56,7 @@ class RootController {
     }
 
     @Controller(value = "/register",requestMethod = RequestMethod.POST, isRest = true)
-    fun onRegisterRequest(context: Context, request: Request, response: Response):ResponseMessage{
+    fun onRegisterRequest(context: Context, request: Request, response: Response): ResponseMessage {
         "onRegisterRequest".log()
 
         val userRequest = request.getBody().toObject<UserRequest>() ?: return ResponseMessage.error("need login parameter")

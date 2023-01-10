@@ -27,6 +27,7 @@ import com.cool.cloudnotesserver.db.entity.AccessRecord
 import com.cool.cloudnotesserver.ui.page.viewmodel.MainViewModel
 import com.cool.cloudnotesserver.ui.widget.StatusBar
 import com.jerry.rt.interfaces.RtCoreListener
+import com.jerry.rt.request.constants.Status
 import java.text.SimpleDateFormat
 
 data class MainScreenState(
@@ -37,22 +38,19 @@ data class MainScreenState(
 @Composable
 fun MainScreen(viewModel: MainViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
     val collectAsState = viewModel.mainStatus.collectAsState()
-    val mainScreenState = collectAsState.value.serverStatus?.let {
-        val color = when (it) {
-            RtCoreListener.Status.INIT -> Color(0xffffa502)
-            RtCoreListener.Status.RUNNING -> Color(0xff2ecc71)
-            RtCoreListener.Status.STOPPING -> Color(0xfffab1a0)
-            RtCoreListener.Status.STOPPED -> Color(0xffe74c3c)
+    val mainScreenState = when (collectAsState.value.serverStatus) {
+        Status.RUNNING -> {
+            MainScreenState(
+                Color(0xff2ecc71),
+                "Stop"
+            )
         }
-        MainScreenState(
-            color,
-            "Stop"
-        )
-    } ?: run {
-        MainScreenState(
-            Color(0xffe74c3c),
-            "Start"
-        )
+        Status.STOPPED -> {
+            MainScreenState(
+                Color(0xffe74c3c),
+                "Start"
+            )
+        }
     }
 
 

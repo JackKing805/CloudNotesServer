@@ -1,317 +1,161 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <title></title>
-
-    <!--bootStrap核心CSS文件-->
-    <link rel="stylesheet" href="css/bootstrap.css" />
-    <!--JQ-->
-    <script type="text/javascript" src="../js/jquery-1.11.0.js"></script>
-    <!--bootStrap核心JS文件-->
-    <script type="text/javascript" src="js/bootstrap.js"></script>
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <link rel="dns-prefetch" href="//api.ffis.me"/>
+  <link rel="dns-prefetch" href="//static.ffis.me"/>
+  <link rel="dns-prefetch" href="//static.noisky.cn"/>
+  <link rel="dns-prefetch" href="//v1.hitokoto.cn"/>
+  <link rel="dns-prefetch" href="//hm.baidu.com"/>
+  <meta name="renderer" content="webkit">
+  <meta name="viewport" content="width=device-width, maximum-scale=2">
+  <title>CloudNote</title>
+  <meta name="author" content="Noisky">
+  <meta name="copyright" content="Noisky's Laboratory"/>
+  <meta name="description" content="CloudNote's Homepage"/>
+  <meta name="keywords" content="CloudNote,Noisky,CloudNote's Homepage"/>
+  <link rel="stylesheet" href="font-awesome.lite.css">
+  <link rel="stylesheet" href="main.min.css">
 </head>
-
 <body>
-<div class="container">
+<!--
+作者：饭饭
+时间：2018.11.27
+描述：本项目使用 Apache License V2.0 开源许可，您可以自由的修改和使用，但请注明出处，非常感谢！
+本项目开源地址：https://github.com/noisky/Homepage
+-->
+<span class="mobile btn-mobile-menu">
+        <i class="fa fa-list btn-mobile-menu_icon"></i>
+        <i class="fa fa-angle-up btn-mobile-close_icon hidden"></i>
+    </span>
+<!-- 随机背景图片 -->
+<header class="panel-cover"></header>
+<!-- 必应每日背景图片
+<header class="panel-cover" style="background-image: url('https://api.ffis.me/bing/bing-images.php')"></header> -->
+<!-- 饭饭的随机背景图片api
+<header class="panel-cover" style="background-image: url('https://api.ffis.me/img/images.php')"></header> -->
 
-    <!--logo-->
-    <div class="row">
-        <div class="col-md-4 col-sm-6 col-xs-6">
-            <img src="MARVEL/logo.jpg" />
+<div class="panel-main">
+  <div class="panel-main_inner panel-inverted">
+    <div class="panel-main_content">
+      <a href="http://ffis.me/" title="前往 CloudNote's Blog"><img src="img/noisky.jpg" alt="Noisky logo"
+                                                          class="panel-cover_logo logo"></a>
+      <!--微博图标
+      <a href="#" class="Weibo_icon_position"><em title="前往饭饭的微博"
+                                                                              class="Weibo_icon Weibo_icon_logo"></em></a>-->
+      <!--国旗图标-->
+      <a href="#" class="Weibo_icon_position"><em title="庆祝新中国成立70周年" id="myAvatar"
+                                                  class="Weibo_icon Weibo_icon_logo"></em></a>
+
+      <h1 class="panel-title"><a href="http://ffis.me/" title="link to homepage for noisky">CloudNote</a></h1>
+
+      <span class="panel-subtitle" id="hitokoto">『Loading…』</span>
+
+      <hr class="panel-cover_divider">
+
+
+      <div class="navigation-wrapper">
+        <div>
+          <nav class="cover-navigation">
+            <ul class="navigation">
+              <li class="navigation_item"><a href="https://ffis.me/" title="访问博客">博客</a></li>
+              <li class="navigation_item"><a href="https://img.ffis.me/" target="_blank"
+                                             rel="noopener noreferrer" title="饭饭's 图床">图床</a>
+              </li>
+              <li class="navigation_item"><a href="https://music.ffis.me/" title="饭饭's 下载站">音乐盒</a></li>
+              <li class="navigation_item"><a href="https://sign.ffis.me/" title="饭饭's 签到站">签到站</a></li>
+              <li class="navigation_item"><a href="https://dl.ffis.me/" title="饭饭's 下载站">下载站</a></li>
+              <li class="navigation_item"><a href="https://ffis.me/about.html" title="关于饭饭">关于</a></li>
+            </ul>
+          </nav>
         </div>
-        <div class="col-md-4 hidden-sm hidden-xs">
-            <img src="image/header.jpg" />
+        <div>
+          <nav class="cover-navigation navigation--social">
+            <ul class="navigation">
+              <!-- Weibo
+              <li class="navigation_item">
+                <a href="http://weibo.com" title="前往微博" target="_blank"
+                   rel="noopener noreferrer">
+                  <i class="social fa fa-weibo"></i>
+                </a>
+              </li> -->
+
+              <!-- QQ
+              <li class="navigation_item">
+                <a data-v class="wechat" href="#" title="QQ">
+                  <div data-v class="qrCode">
+                    <img data-v src="./Noisky_files/img/qq.png" width="100"
+                         onclick='window.open("./Noisky_files/img/qq.png")' alt="qq">
+                    <div data-v class="triangle-down"></div>
+                  </div>
+                  <i class="social fa fa-qq"></i>
+                </a>
+              </li> -->
+
+              <!-- Telegram -->
+              <li class="navigation_item">
+                <a href="https://telegram.me/Noisky" title="Telegeam @Noisky" target="_blank"
+                   rel="noopener noreferrer">
+                  <i class="social fa fa-telegram"></i>
+                </a>
+              </li>
+
+              <!-- Weixin
+              <li class="navigation_item">
+                <a data-v href="#" title="扫一扫加我微信" class="wechat">
+                  <div data-v class="qrCode">
+                    <img data-v src="./Noisky_files/img/Noisky_weixin.png" width="100"
+                         onclick='window.open("./Noisky_files/img/Noisky_weixin.png")' alt="weixin">
+                    <div data-v class="triangle-down"></div>
+                  </div>
+                  <i class="social fa fa-weixin"></i>
+                </a>
+              </li> -->
+
+              <!-- Github -->
+              <li class="navigation_item">
+                <a href="https://github.com/noisky" title="Github @Noisky" target="_blank"
+                   rel="noopener noreferrer">
+                  <i class="social fa fa-github"></i>
+                </a>
+              </li>
+
+              <!-- RSS -->
+              <li class="navigation_item">
+                <a href="https://ffis.me/feed/" title="RSS" target="_blank" rel="noopener noreferrer">
+                  <i class="social fa fa-rss"></i>
+                </a>
+              </li>
+
+              <!-- Email -->
+              <li class="navigation_item">
+                <a href="mailto:i@ffis.me" title="发邮件给我">
+                  <i class="social fa fa-envelope"></i>
+                </a>
+              </li>
+            </ul>
+          </nav>
         </div>
-        <div class="col-md-4 col-sm-6 col-xs-6" style="line-height: 50px; height: 50px; text-align: center;">
-            <a href="#">登录</a>
-            <a href="#">注册</a>
-            <a href="#">购物车</a>
-        </div>
+      </div>
+      <!-- 底部年份动态化 + 备案号 -->
+      <footer class="footer">
+        <p><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41019702002681"
+              rel="nofollow noopener noreferrer"
+              target="_blank"><img src="img/policebeian.png" alt="beian" /> 豫公网安备
+          41019702002681号</a><br />
+          Copyright &copy; 2015-<span class="year"></span> Noisky.cn | <a
+                    href="https://beian.miit.gov.cn/" rel="nofollow noopener noreferrer"
+                    target="_blank">豫ICP备16034017号-1</a></p>
+      </footer>
     </div>
-
-    <!--导航栏-->
-    <nav class="navbar navbar-inverse">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#">首页</a>
-            </div>
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li class="active">
-                        <a href="#">惊奇队长 <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li>
-                        <a href="#">无敌浩克</a>
-                    </li>
-                    <li>
-                        <a href="#">猩红女巫</a>
-                    </li>
-                    <li>
-                        <a href="#">美国队长</a>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">全部分类 <span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li>
-                                <a href="#">惊奇队长</a>
-                            </li>
-                            <li>
-                                <a href="#">无敌浩克</a>
-                            </li>
-                            <li>
-                                <a href="#">猩红女巫</a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="#">美国队长</a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="#">其他分类</a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-                <form class="navbar-form navbar-right" role="search">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search">
-                    </div>
-                    <button type="submit" class="btn btn-default">查找</button>
-                </form>
-            </div>
-            <!-- /.navbar-collapse -->
-        </div>
-        <!-- /.container-fluid -->
-    </nav>
-
-    <!--轮播图-->
-    <div id="carousel-example-generic" class="carousel slide" data-ride="carousel" data-interval="3000">
-        <!-- Indicators -->
-        <ol class="carousel-indicators">
-            <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
-            <li data-target="#carousel-example-generic" data-slide-to="1"></li>
-            <li data-target="#carousel-example-generic" data-slide-to="2"></li>
-        </ol>
-
-        <!-- Wrapper for slides -->
-        <div class="carousel-inner" role="listbox">
-            <div class="item active">
-                <img src="MARVEL/1.jpg" alt="...">
-                <div class="carousel-caption">
-                </div>
-            </div>
-            <div class="item">
-                <img src="MARVEL/2.jpg" alt="...">
-                <div class="carousel-caption">
-                </div>
-            </div>
-            <div class="item">
-                <img src="MARVEL/3.jpg" alt="...">
-                <div class="carousel-caption">
-                </div>
-            </div>
-        </div>
-
-        <!-- Controls -->
-        <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
-            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-        </a>
-        <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
-            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-        </a>
-    </div>
-
-    <!--最新商品-->
-    <div class="row">
-        <!--标题-->
-        <div class="col-md-12">
-            <h3>最新商品<img src="img/title2.jpg"/></h3>
-        </div>
-        <!--左边大图-->
-        <div class="col-md-2 hidden-sm hidden-xs" style="height: 480px;">
-            <img src="MARVEL/zuobiandatu.jpg" />
-        </div>
-        <!--右边商品-->
-        <div class="col-md-10">
-            <!--左上角大图-->
-            <div class="col-md-6 hidden-sm hidden-xs" style="height: 240px;">
-                <img src="MARVEL/zhongjian.jpg" />
-            </div>
-            <!--其他小商品-->
-            <div class="col-md-2 col-sm-4 col-xs-6" style="text-align: center; height: 240px;">
-                <img src="MARVEL/gangtiexia.jpg" />
-                <br />
-                <p>钢铁侠</p>
-                <p>$298</p>
-            </div>
-            <div class="col-md-2 col-sm-4 col-xs-6" style="text-align: center; height: 240px;">
-                <img src="MARVEL/gelute.jpg" />
-                <br />
-                <p>格鲁特</p>
-                <p>$9998</p>
-            </div>
-            <div class="col-md-2 col-sm-4 col-xs-6" style="text-align: center; height: 240px;">
-                <img src="MARVEL/huangxiong.jpg" />
-                <br />
-                <p>小浣熊</p>
-                <p>$198</p>
-            </div>
-            <div class="col-md-2 col-sm-4 col-xs-6" style="text-align: center; height: 240px;">
-                <img src="MARVEL/luoji.jpg" />
-                <br />
-                <p>洛基</p>
-                <p>$998</p>
-            </div>
-            <div class="col-md-2 col-sm-4 col-xs-6" style="text-align: center; height: 240px;">
-                <img src="MARVEL/meiguoduizhang.jpg" />
-                <br />
-                <p>美国队长</p>
-                <p>$498</p>
-            </div>
-            <div class="col-md-2 col-sm-4 col-xs-6" style="text-align: center; height: 240px;">
-                <img src="MARVEL/mieba.jpg" />
-                <br />
-                <p>灭霸</p>
-                <p>$698</p>
-            </div>
-            <div class="col-md-2 col-sm-4 col-xs-6" style="text-align: center; height: 240px;">
-                <img src="MARVEL/wudihaoke.jpg" />
-                <br />
-                <p>绿巨人</p>
-                <p>$98</p>
-            </div>
-            <div class="col-md-2 col-sm-4 col-xs-6" style="text-align: center; height: 240px;">
-                <img src="MARVEL/yiren.jpg" />
-                <br />
-                <p>蚁人</p>
-                <p>$298</p>
-            </div>
-            <div class="col-md-2 col-sm-4 col-xs-6" style="text-align: center; height: 240px;">
-                <img src="MARVEL/zhizhuxia.jpg" />
-                <br />
-                <p>蜘蛛侠</p>
-                <p>$498</p>
-            </div>
-        </div>
-    </div>
-
-    <!--蓝色广告-->
-    <div class="row">
-        <div class="col-md-12 hidden-xs">
-            <img src="MARVEL/ad.jpg" width="100%" />
-        </div>
-    </div>
-
-    <!--热门商品-->
-    <div class="row">
-        <!--标题-->
-        <div class="col-md-12">
-            <h3>热门商品<img src="img/title2.jpg"/></h3>
-        </div>
-        <!--左边大图-->
-        <div class="col-md-2 hidden-sm hidden-xs" style="height: 480px;">
-            <img src="MARVEL/zuobiandatu.jpg" />
-        </div>
-        <!--右边商品-->
-        <div class="col-md-10">
-            <!--左上角大图-->
-            <div class="col-md-6 hidden-sm hidden-xs" style="height: 240px;">
-                <img src="MARVEL/zhongjian.jpg" />
-            </div>
-            <!--其他小商品-->
-            <div class="col-md-2 col-sm-4 col-xs-6" style="text-align: center; height: 240px;">
-                <img src="MARVEL/gangtiexia.jpg" />
-                <br />
-                <p>钢铁侠</p>
-                <p>$298</p>
-            </div>
-            <div class="col-md-2 col-sm-4 col-xs-6" style="text-align: center; height: 240px;">
-                <img src="MARVEL/gelute.jpg" />
-                <br />
-                <p>格鲁特</p>
-                <p>$9998</p>
-            </div>
-            <div class="col-md-2 col-sm-4 col-xs-6" style="text-align: center; height: 240px;">
-                <img src="MARVEL/huangxiong.jpg" />
-                <br />
-                <p>小浣熊</p>
-                <p>$198</p>
-            </div>
-            <div class="col-md-2 col-sm-4 col-xs-6" style="text-align: center; height: 240px;">
-                <img src="MARVEL/luoji.jpg" />
-                <br />
-                <p>洛基</p>
-                <p>$998</p>
-            </div>
-            <div class="col-md-2 col-sm-4 col-xs-6" style="text-align: center; height: 240px;">
-                <img src="MARVEL/meiguoduizhang.jpg" />
-                <br />
-                <p>美国队长</p>
-                <p>$498</p>
-            </div>
-            <div class="col-md-2 col-sm-4 col-xs-6" style="text-align: center; height: 240px;">
-                <img src="MARVEL/mieba.jpg" />
-                <br />
-                <p>灭霸</p>
-                <p>$698</p>
-            </div>
-            <div class="col-md-2 col-sm-4 col-xs-6" style="text-align: center; height: 240px;">
-                <img src="MARVEL/wudihaoke.jpg" />
-                <br />
-                <p>绿巨人</p>
-                <p>$98</p>
-            </div>
-            <div class="col-md-2 col-sm-4 col-xs-6" style="text-align: center; height: 240px;">
-                <img src="MARVEL/yiren.jpg" />
-                <br />
-                <p>蚁人</p>
-                <p>$298</p>
-            </div>
-            <div class="col-md-2 col-sm-4 col-xs-6" style="text-align: center; height: 240px;">
-                <img src="MARVEL/zhizhuxia.jpg" />
-                <br />
-                <p>蜘蛛侠</p>
-                <p>$498</p>
-            </div>
-        </div>
-    </div>
-
-    <!--footer图片-->
-    <div class="row">
-        <div class="col-md-12 hidden-xs">
-            <img src="img/footer.jpg" width="100%" />
-        </div>
-    </div>
-
-    <!--友情链接-->
-    <div class="row" align="center">
-        <a href="#">关于我们</a>
-        <a href="#">联系我们</a>
-        <a href="#">招贤纳士</a>
-        <a href="#">法律声明</a>
-        <a href="#">友情链接</a>
-        <a href="#">支付方式</a>
-        <a href="#">配送方式</a>
-        <a href="#">服务声明</a>
-        <a href="#">广告声明</a>
-        <br /> Copyright © 1998-2019 郑氏集团 版权所有
-    </div>
+  </div>
+  <div class="panel-cover--overlay cover-slate"></div>
 </div>
-</body>
 
+<script type="text/javascript" src="jquery-3.5.0.min.js"></script>
+<script type="text/javascript" src="main.min.js"></script>
+<script src="//v1.hitokoto.cn/?encode=js&select=%23hitokoto" defer></script>
+<!-- 统计代码 -->
+</body>
 </html>
