@@ -1,4 +1,4 @@
-package com.jerry.rt.request.interfaces.impl
+package com.jerry.rt.request.configuration
 
 import android.content.Context
 import android.os.Build.VERSION_CODES.P

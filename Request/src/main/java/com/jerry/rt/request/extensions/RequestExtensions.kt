@@ -3,6 +3,8 @@ package com.jerry.rt.request.extensions
 import com.blankj.utilcode.util.GsonUtils
 import com.jerry.rt.core.http.protocol.RtMimeType
 import com.jerry.rt.request.RequestUtils
+import com.jerry.rt.request.anno.ConfigRegister
+import com.jerry.rt.request.interfaces.IConfig
 import java.io.BufferedReader
 import java.io.File
 import java.io.IOException
@@ -163,3 +165,20 @@ fun URI.resourcesName():String{
         }
     }
 }
+
+
+fun Class<*>.isIConfig():IsIConfigResult{
+    val annotation = this.getAnnotation(ConfigRegister::class.java)
+    val isIConfig = IConfig::class.java.isAssignableFrom(this)
+    return if (annotation!=null && isIConfig){
+        IsIConfigResult.Is(annotation,this.newInstance() as IConfig)
+    }else{
+        IsIConfigResult.No
+    }
+}
+
+sealed class IsIConfigResult{
+    data class Is(val annotation: Annotation,val instance:IConfig):IsIConfigResult()
+    object No:IsIConfigResult()
+}
+

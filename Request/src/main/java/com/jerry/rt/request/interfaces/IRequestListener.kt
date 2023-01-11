@@ -10,10 +10,6 @@ interface IRequestListener {
 
     fun onRequest(url:String){}
 
-    fun onAuth(context: Context,request: Request,response: Response):AuthResult{
-        return AuthResult.Grant
-    }
-
     sealed class AuthResult{
         object Grant :AuthResult()
         data class Denied(val result: Any):AuthResult()

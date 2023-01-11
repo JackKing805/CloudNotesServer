@@ -9,6 +9,5 @@ import java.lang.annotation.Inherited
 annotation class Controller(
     val value:String="",
     val requestMethod: RequestMethod = RequestMethod.GET,
-    val isRest:Boolean = false,
-    val needAuth:Boolean = false
+    val isRest:Boolean = false
 )
