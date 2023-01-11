@@ -14,6 +14,8 @@ import com.jerry.rt.request.extensions.*
 import com.jerry.rt.request.factory.RequestFactory
 import com.jerry.rt.request.interfaces.IResourcesDispatcher
 import com.jerry.rt.request.configuration.DefaultResourcesDispatcher
+import com.jerry.rt.request.factory.dispatcherError
+import com.jerry.rt.request.factory.dispatcherReturn
 import java.io.File
 
 /**
@@ -32,12 +34,11 @@ internal object RequestDelegator {
     }
 
     internal fun dispatcher(context: Context, request: Request, response: Response) {
+        val requestURI = request.getPackage().getRequestURI()
+        RequestUtils.getIRequestListener()?.onRequest(requestURI.path?:"")
         if (!RequestFactory.onRequest(context, request,response)){
             return
         }
-        val requestURI = request.getPackage().getRequestURI()
-        RequestUtils.getIRequestListener()?.onRequest(requestURI.path?:"")
-
 
         val controllerMapper = RequestFactory.matchController(requestURI.path)
         if (controllerMapper != null) {
@@ -90,11 +91,7 @@ internal object RequestDelegator {
     }
 
     private fun dispatcherError(context: Context,request: Request,response: Response, errorCode: Int) {
-        if (!RequestFactory.onResponse(context, request, response)){
-            return
-        }
-        response.setStatusCode(errorCode)
-        response.write(RtCode.match(errorCode).message, RtContentType.TEXT_HTML.content)
+        response.dispatcherError(context,request,errorCode)
     }
 
     private fun dispatcherReturn(
@@ -104,68 +101,7 @@ internal object RequestDelegator {
         response: Response,
         returnObject: Any?
     ) {
-        if (!RequestFactory.onResponse(context,request,response)){
-            return
-        }
-        if (returnObject == null) {
-            dispatcherError(context,request,response, 500)
-            return
-        }
-        if (returnObject is Unit) {
-            dispatcherError(context,request,response, 500)
-        } else {
-            if (isRestController) {
-                if (returnObject is String) {
-                    response.write(returnObject, RtContentType.JSON.content)
-                } else {
-                    response.write(GsonUtils.toJson(returnObject), RtContentType.JSON.content)
-                }
-            } else {
-                if (returnObject is String) {
-                    val fileType = FileType.matchFileType(returnObject)
-                    if (fileType==null){
-                        if(returnObject.startsWith("{")&& returnObject.endsWith("}")){
-                            response.write(returnObject, RtContentType.JSON.content)
-                        }else {
-                            response.write(returnObject, returnObject.getFileMimeType())
-                        }
-                    }else{
-                        when(fileType.fileType){
-                            FileType.SD_CARD -> {
-                                if (fileType.str.startsWith(rootDir)){
-                                    response.writeFile(File(fileType.str))
-                                }else{
-                                    response.writeFile(File(rootDir,fileType.str))
-                                }
-                            }
-                            FileType.ASSETS -> {
-                                val byteArrayFromAssets = fileType.str.byteArrayFromAssets()
-                                if (byteArrayFromAssets!=null){
-                                    response.write(byteArrayFromAssets,fileType.str.getFileMimeType())
-                                }else{
-                                    dispatcherError(context,request,response,404)
-                                }
-                            }
-                            FileType.APP_FILE -> {
-                                response.writeFile(File(RequestUtils.getApplication().filesDir,fileType.str))
-                            }
-                            FileType.RAW -> {
-                                val raw = fileType.str.toInt().byteArrayFromRaw()
-                                if (raw!=null){
-                                    response.write(raw,fileType.str.getFileMimeType())
-                                }else{
-                                    dispatcherError(context,request,response,404)
-                                }
-                            }
-                        }
-                    }
-                } else if (returnObject is File) {
-                    response.writeFile(returnObject)
-                } else {
-                    response.write(GsonUtils.toJson(returnObject), RtContentType.TEXT_PLAIN.content)
-                }
-            }
-        }
+        response.dispatcherReturn(context,isRestController,request,returnObject)
     }
 }
 

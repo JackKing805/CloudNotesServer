@@ -16,6 +16,4 @@ abstract class IConfig {
 
 
     abstract fun onRequest(context: Context,request: Request,response: Response):Boolean
-
-    abstract fun onResponse(context: Context,request: Request,response: Response):Boolean
 }

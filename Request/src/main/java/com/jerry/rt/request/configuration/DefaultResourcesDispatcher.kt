@@ -5,10 +5,12 @@ import android.os.Build.VERSION_CODES.P
 import com.jerry.rt.core.http.pojo.Request
 import com.jerry.rt.core.http.pojo.Response
 import com.jerry.rt.request.R
+import com.jerry.rt.request.anno.Configuration
 import com.jerry.rt.request.constants.FileType
 import com.jerry.rt.request.extensions.log
 import com.jerry.rt.request.interfaces.IResourcesDispatcher
 
+@Configuration
 class DefaultResourcesDispatcher: IResourcesDispatcher() {
     //默认图片都读取assets下的图片
     override fun dealResources(

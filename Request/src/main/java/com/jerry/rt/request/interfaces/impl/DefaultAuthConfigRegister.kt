@@ -23,9 +23,4 @@ class DefaultAuthConfigRegister : IConfig() {
     override fun onRequest(context: Context, request: Request, response: Response): Boolean {
         return  iAuthDispatcher.onAuth(context,request,response)
     }
-
-    override fun onResponse(context: Context, request: Request, response: Response): Boolean {
-        return true
-    }
-
 }
