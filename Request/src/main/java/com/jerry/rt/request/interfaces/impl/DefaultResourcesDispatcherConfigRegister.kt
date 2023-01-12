@@ -6,7 +6,9 @@ import com.jerry.rt.core.http.pojo.Response
 import com.jerry.rt.request.anno.ConfigRegister
 import com.jerry.rt.request.anno.Configuration
 import com.jerry.rt.request.extensions.isResources
+import com.jerry.rt.request.extensions.log
 import com.jerry.rt.request.extensions.resourcesName
+import com.jerry.rt.request.interfaces.IAuthDispatcher
 import com.jerry.rt.request.interfaces.IConfig
 import com.jerry.rt.request.interfaces.IResourcesDispatcher
 import com.jerry.rt.request.utils.ResponseUtils
