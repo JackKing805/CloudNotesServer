@@ -8,4 +8,6 @@ import java.lang.annotation.Inherited
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 @Inherited
-annotation class ConfigRegister
+annotation class ConfigRegister(
+  val priority:Int = 0
+)
