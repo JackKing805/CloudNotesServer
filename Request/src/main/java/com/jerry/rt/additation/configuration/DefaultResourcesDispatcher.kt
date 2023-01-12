@@ -1,14 +1,12 @@
-package com.jerry.rt.request.configuration
+package com.jerry.rt.additation.configuration
 
 import android.content.Context
-import android.os.Build.VERSION_CODES.P
 import com.jerry.rt.core.http.pojo.Request
 import com.jerry.rt.core.http.pojo.Response
 import com.jerry.rt.request.R
 import com.jerry.rt.request.anno.Configuration
 import com.jerry.rt.request.constants.FileType
-import com.jerry.rt.request.extensions.log
-import com.jerry.rt.request.interfaces.IResourcesDispatcher
+import com.jerry.rt.additation.interfaces.IResourcesDispatcher
 
 @Configuration
 class DefaultResourcesDispatcher: IResourcesDispatcher() {

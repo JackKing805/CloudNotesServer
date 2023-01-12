@@ -16,5 +16,7 @@ data class User(
     @ColumnInfo
     val nickName:String,
     @ColumnInfo
+    val token:String="",
+    @ColumnInfo
     val createTime: Long = System.currentTimeMillis()
 )

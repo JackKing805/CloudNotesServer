@@ -2,17 +2,42 @@ package com.cool.cloudnotesserver.requset.controller
 
 import android.content.Context
 import com.cool.cloudnotesserver.extensions.log
+import com.cool.cloudnotesserver.requset.model.ResponseMessage
 import com.jerry.rt.core.http.pojo.Request
+import com.jerry.rt.core.http.pojo.Response
 import com.jerry.rt.request.anno.Controller
-import okhttp3.Response
+import com.jerry.rt.request.anno.RequestMethod
+import com.jerry.rt.request.bean.ParameterBean
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.internal.util.HalfSerializer.onNext
+import io.reactivex.rxkotlin.subscribeBy
+import zlc.season.rxdownload4.download
+import zlc.season.rxdownload4.file
+import kotlin.concurrent.thread
 
-//需要认证才能访问的controller
 @Controller("/auth")
 class AuthController {
-    @Controller("/file")
-    fun onFileRequest(context: Context, request: Request, response: Response) {
-        "onFileRequest".log()
-        val requestURI = request.getPackage().getRequestURI()
-
+    @Controller("/download", requestMethod = RequestMethod.POST)
+    fun onFileRequest(context: Context, request: Request, response: Response,parameterBean: ParameterBean) :ResponseMessage{
+        val get = parameterBean.parameters.get("path") ?: return ResponseMessage.error("no valid download path")
+       thread {
+           val disposable = get.download()
+               .observeOn(AndroidSchedulers.mainThread())
+               .subscribeBy(
+                   onNext = { progress ->
+                       //下载进度
+                       "downloadP:$progress".log("AAA")
+                   },
+                   onComplete = {
+                       //下载完成
+                       "downloadSuccess:${get.file().absolutePath}".log("AAA")
+                   },
+                   onError = {
+                       //下载失败
+                       "downloadError:$it".log("AAA")
+                   }
+               )
+       }
+        return ResponseMessage.ok("start download")
     }
 }

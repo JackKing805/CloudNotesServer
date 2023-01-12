@@ -1,9 +1,6 @@
 package com.cool.cloudnotesserver.db.dao
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import com.cool.cloudnotesserver.db.entity.AccessRecord
 import com.cool.cloudnotesserver.db.entity.User
 import kotlinx.coroutines.flow.Flow
@@ -19,9 +16,15 @@ interface UserDao {
     @Query("select * from User where username=:username")
     fun findByUserName(username:String):User?
 
+    @Query("select * from User where token=:token")
+    fun findByUserToken(token:String):User?
+
     @Insert
     fun insert(user : User)
 
     @Delete
     fun delete(user: User)
+
+    @Update
+    fun update(user: User)
 }

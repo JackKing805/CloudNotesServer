@@ -1,4 +1,4 @@
-package com.jerry.rt.request.interfaces
+package com.jerry.rt.additation.interfaces
 
 import android.content.Context
 import com.jerry.rt.core.http.pojo.Request

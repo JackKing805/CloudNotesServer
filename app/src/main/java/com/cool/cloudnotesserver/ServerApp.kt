@@ -1,6 +1,7 @@
 package com.cool.cloudnotesserver
 
 import android.app.Application
+import com.cool.cloudnotesserver.requset.configuration.AuthConfig
 import com.cool.cloudnotesserver.requset.controller.AuthController
 import com.jerry.rt.request.RequestUtils
 import com.jerry.rt.request.config.Config
@@ -20,7 +21,8 @@ class ServerApp: Application() {
 
         RequestUtils.init(this, Config(R.drawable.ic_launcher_foreground), mutableListOf(
             RootController::class.java,
-            AuthController::class.java
+            AuthController::class.java,
+            AuthConfig::class.java
         ))
     }
 }

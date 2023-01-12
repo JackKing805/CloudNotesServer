@@ -3,9 +3,8 @@ package com.jerry.rt.request
 import android.app.Application
 import com.jerry.rt.request.config.Config
 import com.jerry.rt.request.delegator.RequestDelegator
-import com.jerry.rt.request.interfaces.IAuthDispatcher
 import com.jerry.rt.request.interfaces.IRequestListener
-import com.jerry.rt.request.interfaces.IResourcesDispatcher
+import com.jerry.rt.additation.interfaces.IResourcesDispatcher
 import com.jerry.rt.request.service.ServerService
 
 object RequestUtils {

@@ -7,13 +7,12 @@ import com.jerry.rt.request.anno.ConfigRegister
 import com.jerry.rt.request.anno.Configuration
 import com.jerry.rt.request.anno.Controller
 import com.jerry.rt.request.anno.RequestMethod
-import com.jerry.rt.request.configuration.DefaultAuthDispatcher
-import com.jerry.rt.request.configuration.DefaultResourcesDispatcher
+import com.jerry.rt.additation.configuration.DefaultResourcesDispatcher
 import com.jerry.rt.request.extensions.IsIConfigResult
 import com.jerry.rt.request.extensions.isIConfig
 import com.jerry.rt.request.interfaces.IConfig
-import com.jerry.rt.request.interfaces.impl.DefaultAuthConfigRegister
-import com.jerry.rt.request.interfaces.impl.DefaultResourcesDispatcherConfigRegister
+import com.jerry.rt.additation.interfaces.impl.DefaultAuthConfigRegister
+import com.jerry.rt.additation.interfaces.impl.DefaultResourcesDispatcherConfigRegister
 import java.lang.reflect.Method
 
 
@@ -27,7 +26,6 @@ internal object RequestFactory {
 
     private val defaultInjects = mutableListOf<Class<*>>(
         DefaultAuthConfigRegister::class.java,
-        DefaultAuthDispatcher::class.java,
         DefaultResourcesDispatcherConfigRegister::class.java,
         DefaultResourcesDispatcher::class.java
     )
@@ -97,7 +95,7 @@ internal object RequestFactory {
         clazz.getAnnotation(Configuration::class.java)?.let { con->
             configRegisterList.forEach {
                 if (it.annotation.registerClass.java.isAssignableFrom(clazz)){
-                    it.instance.init(con,clazz.newInstance())
+                    it.instance.init(con,clazz)
                 }
             }
         }

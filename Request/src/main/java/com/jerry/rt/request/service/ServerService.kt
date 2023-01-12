@@ -70,49 +70,47 @@ internal class ServerService: Service() {
     }
 
     private fun startServer(){
-        thread {
-            RtCore.instance.run(RtConfig(), statusListener = object :RtCoreListener{
-                override fun onClientIn(client: Client) {
-                    "onClientIn".log()
-                    client.listen(object :ClientListener{
-                        override fun onException(exception: Exception) {
-                            exception.printStackTrace()
-                        }
-
-                        override fun onInputStreamIn(client: Client, inputStream: InputStream) {
-                            
-                        }
-
-                        override fun onMessage(
-                            client: Client,
-                            request: Request,
-                            response: Response
-                        ) {
-                            "onMessage".log()
-                            RequestDelegator.dispatcher(this@ServerService,request,response)
-                        }
-
-                        override fun onRtHeartbeatIn(client: Client) {
-                            "onRtHeartbeatIn".log()
-                        }
-                    })
-                }
-
-                override fun onClientOut(client: Client) {
-                    "onClientOut".log()
-
-                }
-
-                override fun onStatusChange(status: RtCoreListener.Status) {
-                    "onStatusChange:$status".log()
-                    defaultStatus = status
-
-                    if (defaultStatus==RtCoreListener.Status.STOPPED){
-                        defaultStatus = null
+        RtCore.instance.run(RtConfig(), statusListener = object :RtCoreListener{
+            override fun onClientIn(client: Client) {
+                "onClientIn".log()
+                client.listen(object :ClientListener{
+                    override fun onException(exception: Exception) {
+                        exception.printStackTrace()
                     }
+
+                    override suspend fun onInputStreamIn(client: Client, inputStream: InputStream) {
+
+                    }
+
+                    override suspend fun onMessage(
+                        client: Client,
+                        request: Request,
+                        response: Response
+                    ) {
+                        "onMessage".log()
+                        RequestDelegator.dispatcher(this@ServerService,request,response)
+                    }
+
+                    override suspend fun onRtHeartbeatIn(client: Client) {
+                        "onRtHeartbeatIn".log()
+                    }
+                })
+            }
+
+            override fun onClientOut(client: Client) {
+                "onClientOut".log()
+
+            }
+
+            override fun onStatusChange(status: RtCoreListener.Status) {
+                "onStatusChange:$status".log()
+                defaultStatus = status
+
+                if (defaultStatus==RtCoreListener.Status.STOPPED){
+                    defaultStatus = null
                 }
-            })
-        }
+            }
+        })
     }
 
     private fun stopServer(){

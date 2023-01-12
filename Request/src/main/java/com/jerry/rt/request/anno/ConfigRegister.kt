@@ -11,5 +11,5 @@ import kotlin.reflect.KClass
 @Inherited
 annotation class ConfigRegister(
   val priority:Int = 0,
-  val registerClass:KClass<*>
+  val registerClass:KClass<*> = Any::class
 )

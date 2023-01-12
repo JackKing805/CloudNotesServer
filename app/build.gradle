@@ -110,4 +110,8 @@ dependencies {
 
     //permission
     implementation 'com.github.getActivity:XXPermissions:16.2'
+
+
+    //downloader
+    implementation "com.github.ssseasonnn:RxDownload:1.1.4"
 }

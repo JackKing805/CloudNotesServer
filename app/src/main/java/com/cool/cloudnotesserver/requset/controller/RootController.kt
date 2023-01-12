@@ -43,11 +43,11 @@ class RootController {
             return ResponseMessage.error("username not exits")
         }else{
             if (findByUserName.password==userRequest.password){
-                val cacheToken = SPUtils.getInstance().getString(findByUserName.username, "")
+                val cacheToken = findByUserName.token
                 val token = cacheToken.ifEmpty {
                     UUID.randomUUID().toString()
                 }
-                SPUtils.getInstance().put(findByUserName.username,token)
+                userDao.update(findByUserName.copy(token = token))
                 return ResponseMessage.ok("login success",token)
             }else{
                 return ResponseMessage.error("username or password not correct")

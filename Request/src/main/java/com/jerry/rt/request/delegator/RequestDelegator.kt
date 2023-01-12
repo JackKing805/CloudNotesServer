@@ -1,27 +1,21 @@
 package com.jerry.rt.request.delegator
 
 import android.content.Context
-import android.os.Environment
-import com.blankj.utilcode.util.GsonUtils
 import com.jerry.rt.core.http.pojo.Request
 import com.jerry.rt.core.http.pojo.Response
-import com.jerry.rt.core.http.protocol.RtCode
-import com.jerry.rt.core.http.protocol.RtContentType
 import com.jerry.rt.request.RequestUtils
 import com.jerry.rt.request.bean.ParameterBean
-import com.jerry.rt.request.constants.FileType
 import com.jerry.rt.request.extensions.*
 import com.jerry.rt.request.factory.RequestFactory
-import com.jerry.rt.request.interfaces.IResourcesDispatcher
-import com.jerry.rt.request.configuration.DefaultResourcesDispatcher
+import com.jerry.rt.additation.interfaces.IResourcesDispatcher
+import com.jerry.rt.additation.configuration.DefaultResourcesDispatcher
 import com.jerry.rt.request.utils.ResponseUtils
-import java.io.File
 
 /**
  * 请求分发
  */
 internal object RequestDelegator {
-    private var resourcesDispatcher:IResourcesDispatcher = DefaultResourcesDispatcher()
+    private var resourcesDispatcher: IResourcesDispatcher = DefaultResourcesDispatcher()
 
     fun setResourcesDispatcher(dispatcher: IResourcesDispatcher){
         this.resourcesDispatcher = dispatcher
@@ -74,7 +68,11 @@ internal object RequestDelegator {
                 }
                 try {
                     val invoke = controllerMapper.method.invoke(newInstance, *p.toTypedArray())
-                    ResponseUtils.dispatcherReturn(context, controllerMapper.isRestController,request, response, invoke)
+                    if (invoke==null){
+                        ResponseUtils.dispatcherError(context,request,response, 500)
+                    }else{
+                        ResponseUtils.dispatcherReturn(context, controllerMapper.isRestController,request, response, invoke)
+                    }
                 } catch (e: NullPointerException) {
                     ResponseUtils.dispatcherError(context,request,response, 502)
                 }
