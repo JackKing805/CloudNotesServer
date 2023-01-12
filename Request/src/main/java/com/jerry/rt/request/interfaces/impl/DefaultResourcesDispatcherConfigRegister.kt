@@ -5,12 +5,13 @@ import com.jerry.rt.core.http.pojo.Request
 import com.jerry.rt.core.http.pojo.Response
 import com.jerry.rt.request.anno.ConfigRegister
 import com.jerry.rt.request.anno.Configuration
-import com.jerry.rt.request.extensions.*
-import com.jerry.rt.request.factory.dispatcherReturn
+import com.jerry.rt.request.extensions.isResources
+import com.jerry.rt.request.extensions.resourcesName
 import com.jerry.rt.request.interfaces.IConfig
 import com.jerry.rt.request.interfaces.IResourcesDispatcher
+import com.jerry.rt.request.utils.ResponseUtils
 
-@ConfigRegister
+@ConfigRegister(-1, registerClass = IResourcesDispatcher::class)
 class DefaultResourcesDispatcherConfigRegister : IConfig() {
     private lateinit var iResourcesDispatcher: IResourcesDispatcher
 
@@ -18,23 +19,13 @@ class DefaultResourcesDispatcherConfigRegister : IConfig() {
         iResourcesDispatcher = clazzInstance as IResourcesDispatcher
     }
 
-    override fun determineClazz(clazz: Class<*>): Boolean {
-        return IResourcesDispatcher::class.java.isAssignableFrom(clazz)
-    }
-
     override fun onRequest(context: Context, request: Request, response: Response): Boolean {
         val requestURI = request.getPackage().getRequestURI()
         if (requestURI.isResources()){
-            val dealResources = iResourcesDispatcher.dealResources(
-                context,
-                request,
-                response,
-                requestURI.resourcesName()
-            )
-            response.dispatcherReturn(context,false,request,dealResources)
+            val result = iResourcesDispatcher.dealResources(context,request,response,requestURI.resourcesName())
+            ResponseUtils.dispatcherReturn(context,false,request,response,result)
             return false
         }
         return true
     }
-
 }

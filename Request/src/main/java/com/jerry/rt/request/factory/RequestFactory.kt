@@ -1,25 +1,19 @@
 package com.jerry.rt.request.factory
 
 import android.content.Context
-import android.os.Environment
-import com.blankj.utilcode.util.GsonUtils
 import com.jerry.rt.core.http.pojo.Request
 import com.jerry.rt.core.http.pojo.Response
-import com.jerry.rt.core.http.protocol.RtCode
-import com.jerry.rt.core.http.protocol.RtContentType
-import com.jerry.rt.request.RequestUtils
+import com.jerry.rt.request.anno.ConfigRegister
 import com.jerry.rt.request.anno.Configuration
 import com.jerry.rt.request.anno.Controller
 import com.jerry.rt.request.anno.RequestMethod
 import com.jerry.rt.request.configuration.DefaultAuthDispatcher
 import com.jerry.rt.request.configuration.DefaultResourcesDispatcher
-import com.jerry.rt.request.constants.FileType
-import com.jerry.rt.request.delegator.RequestDelegator
-import com.jerry.rt.request.extensions.*
+import com.jerry.rt.request.extensions.IsIConfigResult
+import com.jerry.rt.request.extensions.isIConfig
 import com.jerry.rt.request.interfaces.IConfig
 import com.jerry.rt.request.interfaces.impl.DefaultAuthConfigRegister
 import com.jerry.rt.request.interfaces.impl.DefaultResourcesDispatcherConfigRegister
-import java.io.File
 import java.lang.reflect.Method
 
 
@@ -28,7 +22,7 @@ import java.lang.reflect.Method
  */
 internal object RequestFactory {
     private val controllerMap = mutableMapOf<String, ControllerMapper>()
-    private val configRegisterList = mutableListOf<IConfig>()
+    private val configRegisterList = mutableListOf<ConfigRegisterMapper>()
 
 
     private val defaultInjects = mutableListOf<Class<*>>(
@@ -40,12 +34,20 @@ internal object RequestFactory {
 
     fun init(injects:MutableList<Class<*>>){
         injects.addAll(defaultInjects)
-        val registers = injects.filter {
-            it.isIConfig() is IsIConfigResult.Is
-        }.toMutableList()
-        injects.removeAll(registers)
+        val registers = mutableListOf<ConfigRegisterMapper>()
+        injects.forEach {
+            val isIConfig = it.isIConfig()
+            if (isIConfig is IsIConfigResult.Is){
+                registers.add(ConfigRegisterMapper(it,isIConfig.annotation,isIConfig.instance) )
+            }
+        }
+        injects.removeAll(registers.map { it.clazz })
 
 
+        //按优先级排序，priority数字越大优先级越大
+        registers.sortByDescending{
+            it.annotation.priority
+        }
         registers.forEach {
             registerConfigRegister(it)
         }
@@ -85,41 +87,41 @@ internal object RequestFactory {
         }
     }
 
-
     //注册配置注册器，需要有ConfigRegister注解并且继承子IConfig
-    private fun registerConfigRegister(clazz: Class<*>){
-        val iConfig = clazz.isIConfig()
-        if (iConfig is IsIConfigResult.Is){
-            configRegisterList.add(iConfig.instance)
-        }
+    private fun registerConfigRegister(iConfig: ConfigRegisterMapper){
+        configRegisterList.add(iConfig)
     }
 
-
+    //根据已有的配置注册器注册配置，如若没有对应的配置注册器，就抛弃配置
     private fun initConfiguration(clazz: Class<*>){
         clazz.getAnnotation(Configuration::class.java)?.let { con->
             configRegisterList.forEach {
-                if (it.determineClazz(clazz)){
-                    it.init(con,clazz.newInstance())
+                if (it.annotation.registerClass.java.isAssignableFrom(clazz)){
+                    it.instance.init(con,clazz.newInstance())
                 }
             }
         }
     }
 
-
     fun onRequest(context: Context,request: Request,response: Response):Boolean{
         configRegisterList.forEach {
-            if (!it.onRequest(context,request,response)){
+            if (!it.instance.onRequest(context,request,response)){
                 return false
             }
         }
         return true
     }
 
-
     fun matchController(path:String):ControllerMapper?{
         return controllerMap[path]
     }
 }
+
+data class ConfigRegisterMapper(
+    val clazz:Class<*>,
+    val annotation: ConfigRegister,
+    val instance:IConfig
+)
 
 data class ControllerMapper(
     val instance: Any,
@@ -127,74 +129,3 @@ data class ControllerMapper(
     val requestMethod: RequestMethod,
     val isRestController: Boolean
 )
-
-private val rootDir = Environment.getExternalStorageDirectory().absolutePath
-fun Response.dispatcherError(context: Context,request: Request, errorCode: Int){
-    this.setStatusCode(errorCode)
-    this.write(RtCode.match(errorCode).message, RtContentType.TEXT_HTML.content)
-}
-
-fun Response.dispatcherReturn( context: Context,
-                               isRestController: Boolean,
-                               request: Request,
-                               returnObject: Any?){
-    if (returnObject == null) {
-        this.dispatcherError(context, request,  500)
-        return
-    }
-    if (returnObject is Unit) {
-        this.dispatcherError(context, request, 500)
-    } else {
-        if (isRestController) {
-            if (returnObject is String) {
-                this.write(returnObject, RtContentType.JSON.content)
-            } else {
-                this.write(GsonUtils.toJson(returnObject), RtContentType.JSON.content)
-            }
-        } else {
-            if (returnObject is String) {
-                val fileType = FileType.matchFileType(returnObject)
-                if (fileType==null){
-                    if(returnObject.startsWith("{")&& returnObject.endsWith("}")){
-                        this.write(returnObject, RtContentType.JSON.content)
-                    }else {
-                        this.write(returnObject, returnObject.getFileMimeType())
-                    }
-                }else{
-                    when(fileType.fileType){
-                        FileType.SD_CARD -> {
-                            if (fileType.str.startsWith(rootDir)){
-                                this.writeFile(File(fileType.str))
-                            }else{
-                                this.writeFile(File(rootDir,fileType.str))
-                            }
-                        }
-                        FileType.ASSETS -> {
-                            val byteArrayFromAssets = fileType.str.byteArrayFromAssets()
-                            if (byteArrayFromAssets!=null){
-                                this.write(byteArrayFromAssets,fileType.str.getFileMimeType())
-                            }else{
-                                this.dispatcherError(context, request, 404)
-                            }
-                        }
-                        FileType.APP_FILE -> {
-                            this.writeFile(File(RequestUtils.getApplication().filesDir,fileType.str))
-                        }
-                        FileType.RAW -> {
-                            val raw = fileType.str.toInt().byteArrayFromRaw()
-                            if (raw!=null){
-                                this.write(raw,fileType.str.getFileMimeType())
-                            }else{
-                                this.dispatcherError(context, request, 404)
-                            }
-                        }
-                    }
-                }
-            } else if (returnObject is File) {
-                this.writeFile(returnObject)
-            } else {
-                this.write(GsonUtils.toJson(returnObject), RtContentType.TEXT_PLAIN.content)
-            }
-        }
-    }
-}

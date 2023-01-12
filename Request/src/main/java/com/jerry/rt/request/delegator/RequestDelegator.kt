@@ -14,15 +14,13 @@ import com.jerry.rt.request.extensions.*
 import com.jerry.rt.request.factory.RequestFactory
 import com.jerry.rt.request.interfaces.IResourcesDispatcher
 import com.jerry.rt.request.configuration.DefaultResourcesDispatcher
-import com.jerry.rt.request.factory.dispatcherError
-import com.jerry.rt.request.factory.dispatcherReturn
+import com.jerry.rt.request.utils.ResponseUtils
 import java.io.File
 
 /**
  * 请求分发
  */
 internal object RequestDelegator {
-    private val rootDir = Environment.getExternalStorageDirectory().absolutePath
     private var resourcesDispatcher:IResourcesDispatcher = DefaultResourcesDispatcher()
 
     fun setResourcesDispatcher(dispatcher: IResourcesDispatcher){
@@ -39,7 +37,6 @@ internal object RequestDelegator {
         if (!RequestFactory.onRequest(context, request,response)){
             return
         }
-
         val controllerMapper = RequestFactory.matchController(requestURI.path)
         if (controllerMapper != null) {
             if (controllerMapper.requestMethod.content.equals(request.getPackage().method, true)) {
@@ -72,36 +69,22 @@ internal object RequestDelegator {
                         }
                     }
                 } catch (e: Exception) {
-                    dispatcherError(context,request,response, 500)
+                    ResponseUtils.dispatcherError(context,request,response, 500)
                     return
                 }
                 try {
                     val invoke = controllerMapper.method.invoke(newInstance, *p.toTypedArray())
-                    dispatcherReturn(context, controllerMapper.isRestController,request, response, invoke)
+                    ResponseUtils.dispatcherReturn(context, controllerMapper.isRestController,request, response, invoke)
                 } catch (e: NullPointerException) {
-                    dispatcherError(context,request,response, 502)
+                    ResponseUtils.dispatcherError(context,request,response, 502)
                 }
                 return
             } else {
-                dispatcherError(context,request,response, 405)
+                ResponseUtils.dispatcherError(context,request,response, 405)
                 return
             }
         }
-        dispatcherError(context,request,response, 404)
-    }
-
-    private fun dispatcherError(context: Context,request: Request,response: Response, errorCode: Int) {
-        response.dispatcherError(context,request,errorCode)
-    }
-
-    private fun dispatcherReturn(
-        context: Context,
-        isRestController: Boolean,
-        request: Request,
-        response: Response,
-        returnObject: Any?
-    ) {
-        response.dispatcherReturn(context,isRestController,request,returnObject)
+        ResponseUtils.dispatcherError(context,request,response, 404)
     }
 }
 
