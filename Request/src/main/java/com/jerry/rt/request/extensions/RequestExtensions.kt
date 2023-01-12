@@ -178,7 +178,7 @@ fun Class<*>.isIConfig():IsIConfigResult{
 }
 
 sealed class IsIConfigResult{
-    data class Is(val annotation: Annotation,val instance:IConfig):IsIConfigResult()
+    data class Is(val annotation: ConfigRegister,val instance:IConfig):IsIConfigResult()
     object No:IsIConfigResult()
 }
 
