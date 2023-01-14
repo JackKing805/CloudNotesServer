@@ -18,7 +18,9 @@ data class ResponseMessage(
 
         fun error() = create(-200, "error")
         fun error(msg: String, data: Any? = null) = create(-200, msg, data)
+        fun error(code:Int,msg: String, data: Any? = null) = create(code, msg, data)
         fun error(data: Any) = create(-200, "error", data)
+        fun ok(code: Int,msg: String, data: Any? = null) = create(code, msg, data)
         fun ok(msg: String, data: Any? = null) = create(200, msg, data)
         fun ok(data: Any) = create(200, "success", data)
     }

@@ -4,16 +4,14 @@ import android.app.Application
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.blankj.utilcode.util.UiMessageUtils
 import com.cool.cloudnotesserver.db.ServerRoom
 import com.cool.cloudnotesserver.db.entity.AccessRecord
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
-import com.jerry.rt.interfaces.RtCoreListener
-import com.jerry.rt.request.RequestUtils
-import com.jerry.rt.request.constants.Status
-import com.jerry.rt.request.interfaces.IRequestListener
+import com.jerry.request_core.RequestUtils
+import com.jerry.request_core.constants.Status
+import com.jerry.request_core.interfaces.IRequestListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
@@ -26,7 +24,7 @@ class MainViewModel(application: Application):AndroidViewModel(application) {
     val mainStatus = _mainUIStatus
 
     init {
-        RequestUtils.listen(object :IRequestListener{
+        RequestUtils.listen(object : IRequestListener {
             override fun onStatusChange(status: Status) {
                 _mainUIStatus.value = _mainUIStatus.value.copy(serverStatus = status)
             }

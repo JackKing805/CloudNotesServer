@@ -26,8 +26,8 @@ import com.blankj.utilcode.util.NetworkUtils
 import com.cool.cloudnotesserver.db.entity.AccessRecord
 import com.cool.cloudnotesserver.ui.page.viewmodel.MainViewModel
 import com.cool.cloudnotesserver.ui.widget.StatusBar
+import com.jerry.request_core.constants.Status
 import com.jerry.rt.interfaces.RtCoreListener
-import com.jerry.rt.request.constants.Status
 import java.text.SimpleDateFormat
 
 data class MainScreenState(

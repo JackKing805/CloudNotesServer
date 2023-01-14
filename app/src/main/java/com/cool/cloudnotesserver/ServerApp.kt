@@ -3,9 +3,9 @@ package com.cool.cloudnotesserver
 import android.app.Application
 import com.cool.cloudnotesserver.requset.configuration.AuthConfig
 import com.cool.cloudnotesserver.requset.controller.AuthController
-import com.jerry.rt.request.RequestUtils
-import com.jerry.rt.request.config.Config
 import com.cool.cloudnotesserver.requset.controller.RootController
+import com.jerry.request_core.RequestUtils
+import com.jerry.request_core.config.Config
 
 class ServerApp: Application() {
     companion object{

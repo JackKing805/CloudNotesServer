@@ -1,13 +1,15 @@
 package com.cool.cloudnotesserver.requset.controller
 
 import android.content.Context
+import com.cool.cloudnotesserver.db.ServerRoom
+import com.cool.cloudnotesserver.db.entity.Note
 import com.cool.cloudnotesserver.extensions.log
 import com.cool.cloudnotesserver.requset.model.ResponseMessage
+import com.jerry.request_base.annotations.Controller
+import com.jerry.request_base.annotations.RequestMethod
+import com.jerry.request_core.bean.ParameterBean
 import com.jerry.rt.core.http.pojo.Request
 import com.jerry.rt.core.http.pojo.Response
-import com.jerry.rt.request.anno.Controller
-import com.jerry.rt.request.anno.RequestMethod
-import com.jerry.rt.request.bean.ParameterBean
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.internal.util.HalfSerializer.onNext
 import io.reactivex.rxkotlin.subscribeBy
@@ -15,10 +17,10 @@ import zlc.season.rxdownload4.download
 import zlc.season.rxdownload4.file
 import kotlin.concurrent.thread
 
-@Controller("/auth")
+@Controller("/auth", isRest = true)
 class AuthController {
     @Controller("/download", requestMethod = RequestMethod.POST)
-    fun onFileRequest(context: Context, request: Request, response: Response,parameterBean: ParameterBean) :ResponseMessage{
+    fun onFileRequest(context: Context, request: Request, response: Response, parameterBean: ParameterBean) :ResponseMessage{
         val get = parameterBean.parameters.get("path") ?: return ResponseMessage.error("no valid download path")
        thread {
            val disposable = get.download()
@@ -39,5 +41,31 @@ class AuthController {
                )
        }
         return ResponseMessage.ok("start download")
+    }
+
+    data class SaveNote(
+        val content:String,
+        val lock:Boolean = false,
+        val type:String
+    )
+
+    @Controller("/note/save", requestMethod = RequestMethod.POST)
+    fun onNoteSaveRequest(request: Request,saveNote: SaveNote?):ResponseMessage{
+        saveNote?:return ResponseMessage.error("error data")
+        ServerRoom.instance.getNoteDao().insert(Note(
+            content = saveNote.content,
+            lock = saveNote.lock,
+            type = saveNote.type
+        ))
+        return ResponseMessage.ok("save success")
+    }
+
+    @Controller("/note/list")
+    fun onNotesRequest(request: Request,parameterBean: ParameterBean):ResponseMessage{
+        val start = parameterBean.parameters["start"]?.toInt()?:0
+        val size = parameterBean.parameters["size"]?.toInt()?:10
+        "onNotesRequest->start:$start,size:$size".log()
+        val list = ServerRoom.instance.getNoteDao().list(start,size)
+        return ResponseMessage.ok(list)
     }
 }

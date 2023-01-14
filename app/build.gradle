@@ -52,7 +52,6 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
     implementation 'androidx.compose.material3:material3:1.0.1'
-    implementation project(path: ':Request')
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
@@ -114,4 +113,11 @@ dependencies {
 
     //downloader
     implementation "com.github.ssseasonnn:RxDownload:1.1.4"
+
+
+    //server
+    implementation 'com.github.jerryxfl:RtCore:0.1.6'
+    implementation 'com.github.JackKing805:request_base:0.0.1'
+    implementation 'com.github.JackKing805:request_core:0.0.8'
+
 }
