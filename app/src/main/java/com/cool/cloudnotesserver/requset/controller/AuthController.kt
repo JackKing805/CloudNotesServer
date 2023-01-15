@@ -4,6 +4,7 @@ import android.content.Context
 import com.cool.cloudnotesserver.db.ServerRoom
 import com.cool.cloudnotesserver.db.entity.Note
 import com.cool.cloudnotesserver.extensions.log
+import com.cool.cloudnotesserver.extensions.safeSubList
 import com.cool.cloudnotesserver.requset.model.ResponseMessage
 import com.jerry.request_base.annotations.Controller
 import com.jerry.request_base.annotations.RequestMethod
@@ -44,6 +45,7 @@ class AuthController {
     }
 
     data class SaveNote(
+        val title:String,
         val content:String,
         val lock:Boolean = false,
         val type:String
@@ -53,6 +55,7 @@ class AuthController {
     fun onNoteSaveRequest(request: Request,saveNote: SaveNote?):ResponseMessage{
         saveNote?:return ResponseMessage.error("error data")
         ServerRoom.instance.getNoteDao().insert(Note(
+            title =saveNote.title,
             content = saveNote.content,
             lock = saveNote.lock,
             type = saveNote.type
@@ -65,7 +68,8 @@ class AuthController {
         val start = parameterBean.parameters["start"]?.toInt()?:0
         val size = parameterBean.parameters["size"]?.toInt()?:10
         "onNotesRequest->start:$start,size:$size".log()
-        val list = ServerRoom.instance.getNoteDao().list(start,size)
-        return ResponseMessage.ok(list)
+        val list = ServerRoom.instance.getNoteDao().list().sortedBy { -it.lastModifyTime }
+        val subList = list.safeSubList(start, size)
+        return ResponseMessage.ok(subList)
     }
 }

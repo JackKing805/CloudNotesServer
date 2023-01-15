@@ -16,6 +16,7 @@ interface NoteDao {
 
     @Query("select * from Note limit :start,:size")
     fun list(start:Int=0,size:Int = 10):List<Note>
+
     @Insert
     fun insert(note : Note)
 

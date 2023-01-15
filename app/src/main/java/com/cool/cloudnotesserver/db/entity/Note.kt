@@ -10,6 +10,8 @@ data class Note(
     @ColumnInfo
     val id: Long = 0,
     @ColumnInfo
+    val title:String,
+    @ColumnInfo
     val content: String,
     @ColumnInfo
     val type:String,
