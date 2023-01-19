@@ -8,6 +8,7 @@ import com.jerry.request_base.annotations.Configuration
 import com.jerry.request_core.additation.DefaultAuthConfigRegister
 import com.jerry.rt.core.http.pojo.Request
 import com.jerry.rt.core.http.pojo.Response
+import com.jerry.rt.core.http.pojo.s.IResponse
 import com.jerry.rt.core.http.protocol.RtContentType
 
 //注解拦截处理器
@@ -19,7 +20,7 @@ class AuthConfig {
                 override fun handle(
                     context: Context,
                     request: Request,
-                    response: Response
+                    response: IResponse
                 ): Boolean {
                     val token = request.getPackage().getHeaderValue("Token", "")
                     if (token.isEmpty()){
