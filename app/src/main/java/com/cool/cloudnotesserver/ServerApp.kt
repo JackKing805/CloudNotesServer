@@ -19,7 +19,7 @@ class ServerApp: Application() {
     override fun onCreate() {
         super.onCreate()
 
-        RequestUtils.init(this, Config(R.drawable.ic_launcher_foreground), mutableListOf(
+        RequestUtils.init(this, mutableListOf(
             RootController::class.java,
             AuthController::class.java,
             AuthConfig::class.java

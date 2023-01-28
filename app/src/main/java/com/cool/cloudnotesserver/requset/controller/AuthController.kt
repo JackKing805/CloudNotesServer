@@ -7,12 +7,11 @@ import com.cool.cloudnotesserver.extensions.log
 import com.cool.cloudnotesserver.extensions.safeSubList
 import com.cool.cloudnotesserver.requset.model.ResponseMessage
 import com.jerry.request_base.annotations.Controller
-import com.jerry.request_base.annotations.RequestMethod
+import com.jerry.request_base.bean.RequestMethod
 import com.jerry.request_core.bean.ParameterBean
 import com.jerry.rt.core.http.pojo.Request
 import com.jerry.rt.core.http.pojo.Response
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.internal.util.HalfSerializer.onNext
 import io.reactivex.rxkotlin.subscribeBy
 import zlc.season.rxdownload4.download
 import zlc.season.rxdownload4.file

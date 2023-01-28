@@ -22,7 +22,7 @@ class AuthConfig {
                     request: Request,
                     response: IResponse
                 ): Boolean {
-                    val token = request.getPackage().getHeaderValue("Token", "")
+                    val token = request.getPackage().getHeader().getHeaderValue("Token", "")
                     if (token.isEmpty()){
                         response.write(ResponseMessage.error("not auth").toJson(),RtContentType.JSON.content)
                         return false

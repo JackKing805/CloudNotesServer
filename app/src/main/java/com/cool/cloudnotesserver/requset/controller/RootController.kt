@@ -8,8 +8,7 @@ import com.jerry.rt.core.http.pojo.Request
 import com.jerry.rt.core.http.pojo.Response
 import com.cool.cloudnotesserver.requset.model.ResponseMessage
 import com.jerry.request_base.annotations.Controller
-import com.jerry.request_base.annotations.RequestMethod
-import com.jerry.request_core.bean.ParameterBean
+import com.jerry.request_base.bean.RequestMethod
 import com.jerry.request_core.constants.FileType
 import com.jerry.request_core.extensions.toObject
 import java.io.File
@@ -56,7 +55,7 @@ class RootController {
     @Controller(value = "/login/verify_token",requestMethod = RequestMethod.GET, isRest = true)
     fun onLoginTokenRequest(context: Context, request: Request, response: Response): ResponseMessage {
         "onLoginTokenRequest:${Thread.currentThread()}".log()
-        val s = request.getPackage().getHeaderValue("Token","")
+        val s = request.getPackage().getHeader().getHeaderValue("Token","")
         if (s.isEmpty()){
             return ResponseMessage.error("verify failure")
         }else{

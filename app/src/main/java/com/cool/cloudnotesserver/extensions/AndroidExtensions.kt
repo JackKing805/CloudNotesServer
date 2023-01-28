@@ -6,7 +6,7 @@ fun <T> List<T>.safeSubList(start:Int,sizeu:Int):List<T>{
     }
 
     val end = if (start+sizeu>=size){
-        size
+        size-1
     }else{
         start+sizeu
     }
