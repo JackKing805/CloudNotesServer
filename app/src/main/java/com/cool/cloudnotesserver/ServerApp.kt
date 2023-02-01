@@ -4,8 +4,7 @@ import android.app.Application
 import com.cool.cloudnotesserver.requset.configuration.AuthConfig
 import com.cool.cloudnotesserver.requset.controller.AuthController
 import com.cool.cloudnotesserver.requset.controller.RootController
-import com.jerry.request_core.RequestUtils
-import com.jerry.request_core.config.Config
+import com.jerry.request_core.Core
 
 class ServerApp: Application() {
     companion object{
@@ -19,7 +18,7 @@ class ServerApp: Application() {
     override fun onCreate() {
         super.onCreate()
 
-        RequestUtils.init(this, mutableListOf(
+        Core.init(this, mutableListOf(
             RootController::class.java,
             AuthController::class.java,
             AuthConfig::class.java

@@ -9,7 +9,7 @@ import com.cool.cloudnotesserver.db.entity.AccessRecord
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
-import com.jerry.request_core.RequestUtils
+import com.jerry.request_core.Core
 import com.jerry.request_core.constants.Status
 import com.jerry.request_core.interfaces.IRequestListener
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +24,7 @@ class MainViewModel(application: Application):AndroidViewModel(application) {
     val mainStatus = _mainUIStatus
 
     init {
-        RequestUtils.listen(object : IRequestListener {
+        Core.listen(object : IRequestListener {
             override fun onStatusChange(status: Status) {
                 _mainUIStatus.value = _mainUIStatus.value.copy(serverStatus = status)
             }
@@ -60,10 +60,10 @@ class MainViewModel(application: Application):AndroidViewModel(application) {
                     if (all){
                         when (mainStatus.value.serverStatus){
                             Status.STOPPED -> {
-                                RequestUtils.startServer()
+                                Core.startServer()
                             }
                             Status.RUNNING -> {
-                                RequestUtils.stopServer()
+                                Core.stopServer()
                             }
                         }
                     }

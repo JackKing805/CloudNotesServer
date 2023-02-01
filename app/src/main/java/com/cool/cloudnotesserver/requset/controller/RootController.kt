@@ -11,7 +11,7 @@ import com.jerry.request_base.annotations.Controller
 import com.jerry.request_base.bean.RequestMethod
 import com.jerry.request_core.constants.FileType
 import com.jerry.request_core.extensions.toObject
-import java.io.File
+import com.jerry.request_shiro.shiro.anno.ShiroRole
 import java.util.UUID
 
 @Controller("/")
