@@ -11,6 +11,9 @@ import com.jerry.request_base.annotations.Controller
 import com.jerry.request_base.bean.RequestMethod
 import com.jerry.request_core.constants.FileType
 import com.jerry.request_core.extensions.toObject
+import com.jerry.request_shiro.shiro.ShiroUtils
+import com.jerry.request_shiro.shiro.impl.SimpleUserLogin
+import com.jerry.request_shiro.shiro.interfaces.UserLoginToken
 import com.jerry.rt.utils.RtUtils
 import java.util.*
 
