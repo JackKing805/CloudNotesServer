@@ -11,8 +11,8 @@ import com.jerry.request_base.annotations.Controller
 import com.jerry.request_base.bean.RequestMethod
 import com.jerry.request_core.constants.FileType
 import com.jerry.request_core.extensions.toObject
-import com.jerry.request_shiro.shiro.anno.ShiroRole
-import java.util.UUID
+import com.jerry.rt.utils.RtUtils
+import java.util.*
 
 @Controller("/")
 class RootController {
@@ -30,7 +30,6 @@ class RootController {
     @Controller(value = "/login",requestMethod = RequestMethod.POST, isRest = true)
     fun onLoginRequest(context: Context, request: Request, response: Response, userRequest: UserRequest?): ResponseMessage {
         "onLoginRequest:${Thread.currentThread()}".log()
-
         if (userRequest==null){
             return ResponseMessage.error("need login parameter")
         }

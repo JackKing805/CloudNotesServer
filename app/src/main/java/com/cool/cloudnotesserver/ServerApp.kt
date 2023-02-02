@@ -4,6 +4,7 @@ import android.app.Application
 import com.cool.cloudnotesserver.requset.configuration.AuthConfig
 import com.cool.cloudnotesserver.requset.controller.AuthController
 import com.cool.cloudnotesserver.requset.controller.RootController
+import com.cool.cloudnotesserver.requset.exception.ServerExceptionHandler
 import com.jerry.request_core.Core
 
 class ServerApp: Application() {
@@ -21,7 +22,8 @@ class ServerApp: Application() {
         Core.init(this, mutableListOf(
             RootController::class.java,
             AuthController::class.java,
-            AuthConfig::class.java
+            AuthConfig::class.java,
+            ServerExceptionHandler::class.java
         ))
     }
 }

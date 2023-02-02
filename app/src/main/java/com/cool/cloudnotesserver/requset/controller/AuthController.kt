@@ -9,6 +9,7 @@ import com.cool.cloudnotesserver.requset.model.ResponseMessage
 import com.jerry.request_base.annotations.Controller
 import com.jerry.request_base.bean.RequestMethod
 import com.jerry.request_core.bean.ParameterBean
+import com.jerry.request_shiro.shiro.anno.ShiroRole
 import com.jerry.rt.core.http.pojo.Request
 import com.jerry.rt.core.http.pojo.Response
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -18,6 +19,7 @@ import zlc.season.rxdownload4.file
 import kotlin.concurrent.thread
 
 
+@ShiroRole(["user"])
 @Controller("/auth", isRest = true)
 class AuthController {
     @Controller("/download", requestMethod = RequestMethod.POST)
