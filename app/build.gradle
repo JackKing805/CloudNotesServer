@@ -99,11 +99,11 @@ dependencies {
 
 
     //room
-    def room_version = "2.5.0-beta01"
+    def room_version = "2.5.0"
 
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
-    implementation "androidx.room:room-paging:2.5.0-beta01"
+    implementation "androidx.room:room-paging:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
 
 
@@ -116,8 +116,8 @@ dependencies {
 
 
     //server
-    implementation 'com.github.JackKing805:RtCore:0.3.0'
+    implementation 'com.github.JackKing805:RtCore:0.3.2'
     implementation 'com.github.JackKing805:request_base:0.1.2'
-    implementation 'com.github.JackKing805:request_core:0.2.8'
-    implementation 'com.github.JackKing805:request_shiro:0.0.5'
+    implementation 'com.github.JackKing805:request_core:0.2.9'
+    implementation 'com.github.JackKing805:request_shiro:0.0.8'
 }

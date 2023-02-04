@@ -3,6 +3,7 @@ package com.cool.cloudnotesserver.requset.controller
 import android.content.Context
 import com.cool.cloudnotesserver.db.ServerRoom
 import com.cool.cloudnotesserver.db.entity.User
+import com.cool.cloudnotesserver.db.service.ServiceRoomService
 import com.cool.cloudnotesserver.extensions.log
 import com.jerry.rt.core.http.pojo.Request
 import com.jerry.rt.core.http.pojo.Response
@@ -21,7 +22,6 @@ import java.util.*
 class RootController {
     @Controller("/")
     fun onRootRequest(context: Context, request: Request, response: Response):String {
-        "onRootRequest:${Thread.currentThread()}".log()
         return FileType.ASSETS.content + "index.html"
     }
 
@@ -32,7 +32,6 @@ class RootController {
 
     @Controller(value = "/login",requestMethod = RequestMethod.POST, isRest = true)
     fun onLoginRequest(context: Context, request: Request, response: Response, userRequest: UserRequest?): ResponseMessage {
-        "onLoginRequest:${Thread.currentThread()}".log()
         if (userRequest==null){
             return ResponseMessage.error("need login parameter")
         }
@@ -42,43 +41,36 @@ class RootController {
             return ResponseMessage.error("username not exits")
         }else{
             if (findByUserName.password==userRequest.password){
-                val cacheToken = findByUserName.token
-                val token = cacheToken.ifEmpty {
-                    UUID.randomUUID().toString()
-                }
-                userDao.update(findByUserName.copy(token = token))
-                return ResponseMessage.ok("login success",token)
+                val loginToken = ShiroUtils.login(
+                    SimpleUserLogin(
+                        request,
+                        response,
+                        findByUserName.username,
+                        userRequest.password
+                    )
+                )
+                return ResponseMessage.ok("login success",loginToken)
             }else{
                 return ResponseMessage.error("username or password not correct")
             }
         }
     }
 
-    @Controller(value = "/login/verify_token",requestMethod = RequestMethod.GET, isRest = true)
-    fun onLoginTokenRequest(context: Context, request: Request, response: Response): ResponseMessage {
-        "onLoginTokenRequest:${Thread.currentThread()}".log()
-        val s = request.getPackage().getHeader().getHeaderValue("Token","")
-        if (s.isEmpty()){
-            return ResponseMessage.error("verify failure")
-        }else{
-            val userDao = ServerRoom.instance.getUserDao()
-            val findByUserToken = userDao.findByUserToken(s)
-            if (findByUserToken==null){
-                return ResponseMessage.error("verify failure")
-            }
-            return ResponseMessage.ok("verify success")
-        }
-    }
-
     @Controller(value = "/register",requestMethod = RequestMethod.POST, isRest = true)
     fun onRegisterRequest(context: Context, request: Request, response: Response): ResponseMessage {
-        "onRegisterRequest".log()
-
         val userRequest = request.getBody().toObject<UserRequest>() ?: return ResponseMessage.error("need register parameter")
+        if (userRequest.username.isEmpty()){
+            return ResponseMessage.error("username can't be empty")
+        }
+
+        if (userRequest.password.isEmpty()){
+            return ResponseMessage.error("password can't be empty")
+        }
+
         val userDao = ServerRoom.instance.getUserDao()
         val findByUserName = userDao.findByUserName(userRequest.username)
         if (findByUserName==null){
-            userDao.insert(User(username = userRequest.username, password = userRequest.password, nickName = "CloudNote User"))
+            ServiceRoomService.createUser(User(username = userRequest.username, password = userRequest.password, nickName = "CloudNote User"))
             return ResponseMessage.ok("register success")
         }else{
             return ResponseMessage.error("username is already be use,please change your username")

@@ -6,15 +6,13 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(indices = [Index("id", unique = true)])
-data class User(
+data class UserRole(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     @ColumnInfo
-    val username: String,
+    val userId:Long,
     @ColumnInfo
-    val password: String,
-    @ColumnInfo
-    val nickName:String,
+    val roleId:Long,
     @ColumnInfo
     val createTime: Long = System.currentTimeMillis()
 )

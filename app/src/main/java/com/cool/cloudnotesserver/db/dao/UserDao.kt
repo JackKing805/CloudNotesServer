@@ -16,9 +16,6 @@ interface UserDao {
     @Query("select * from User where username=:username")
     fun findByUserName(username:String):User?
 
-    @Query("select * from User where token=:token")
-    fun findByUserToken(token:String):User?
-
     @Insert
     fun insert(user : User)
 
