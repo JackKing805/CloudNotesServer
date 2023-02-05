@@ -19,7 +19,6 @@ import zlc.season.rxdownload4.file
 import kotlin.concurrent.thread
 
 
-@ShiroRole(["user"])
 @Controller("/auth", isRest = true)
 class AuthController {
     @Controller("/download", requestMethod = RequestMethod.POST)

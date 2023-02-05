@@ -1,6 +1,8 @@
 package com.cool.cloudnotesserver.requset.controller
 
 import android.content.Context
+import com.blankj.utilcode.util.EncodeUtils
+import com.blankj.utilcode.util.EncryptUtils
 import com.cool.cloudnotesserver.db.ServerRoom
 import com.cool.cloudnotesserver.db.entity.User
 import com.cool.cloudnotesserver.db.service.ServiceRoomService
@@ -40,7 +42,9 @@ class RootController {
         if (findByUserName==null){
             return ResponseMessage.error("username not exits")
         }else{
-            if (findByUserName.password==userRequest.password){
+            val thisHashedCredential = EncryptUtils.encryptMD5ToString(findByUserName.salt + userRequest.password)
+
+            if (thisHashedCredential==findByUserName.hashedCredential){
                 val loginToken = ShiroUtils.login(
                     SimpleUserLogin(
                         request,
@@ -70,7 +74,10 @@ class RootController {
         val userDao = ServerRoom.instance.getUserDao()
         val findByUserName = userDao.findByUserName(userRequest.username)
         if (findByUserName==null){
-            ServiceRoomService.createUser(User(username = userRequest.username, password = userRequest.password, nickName = "CloudNote User"))
+            val salt = UUID.randomUUID().toString()
+            val hashedCredential = EncryptUtils.encryptMD5ToString(salt + userRequest.password)
+
+            ServiceRoomService.createUser(User(username = userRequest.username, salt = salt, hashedCredential = hashedCredential, nickName = "CloudNote User"))
             return ResponseMessage.ok("register success")
         }else{
             return ResponseMessage.error("username is already be use,please change your username")
