@@ -22,9 +22,13 @@ import java.util.*
 
 @Controller("/")
 class RootController {
-    @Controller("/")
-    fun onRootRequest(context: Context, request: Request, response: Response):String {
-        return FileType.ASSETS.content + "index.html"
+    @Controller("/{page}")
+    fun onRootRequest(context: Context, request: Request, response: Response,page:String?):String {
+        if (page==null){
+            return FileType.ASSETS.content + "index.html"
+        }else{
+            return FileType.ASSETS.content + page
+        }
     }
 
     data class UserRequest(
