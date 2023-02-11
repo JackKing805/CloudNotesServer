@@ -7,6 +7,9 @@ import com.cool.cloudnotesserver.requset.controller.AuthController
 import com.cool.cloudnotesserver.requset.controller.RootController
 import com.cool.cloudnotesserver.requset.exception.ServerExceptionHandler
 import com.jerry.request_core.Core
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class ServerApp: Application() {
     companion object{
@@ -29,7 +32,4 @@ class ServerApp: Application() {
 
         ServerRoom.onCreate()
     }
-
-
-
 }

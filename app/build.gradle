@@ -116,8 +116,14 @@ dependencies {
 
 
     //server
-    implementation 'com.github.JackKing805:RtCore:0.3.4'
-    implementation 'com.github.JackKing805:request_base:0.1.2'
-    implementation 'com.github.JackKing805:request_core:0.3.3'
-    implementation 'com.github.JackKing805:request_shiro:0.0.9'
+    implementation 'com.github.JackKing805:RtCore:0.4.0'
+    implementation 'com.github.JackKing805:request_base:0.1.5'
+    implementation 'com.github.JackKing805:request_core:0.3.5'
+    implementation 'com.github.JackKing805:request_shiro:0.1.1'
+
+
+    //http
+    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.10.0"))
+    implementation("com.squareup.okhttp3:okhttp")
+    implementation("com.squareup.okhttp3:logging-interceptor")
 }
