@@ -4,6 +4,7 @@ import android.app.Application
 import com.cool.cloudnotesserver.db.ServerRoom
 import com.cool.cloudnotesserver.requset.configuration.AuthConfig
 import com.cool.cloudnotesserver.requset.controller.AuthController
+import com.cool.cloudnotesserver.requset.controller.DealHtml
 import com.cool.cloudnotesserver.requset.controller.RootController
 import com.cool.cloudnotesserver.requset.exception.ServerExceptionHandler
 import com.jerry.request_core.Core
@@ -27,7 +28,8 @@ class ServerApp: Application() {
             RootController::class.java,
             AuthController::class.java,
             AuthConfig::class.java,
-            ServerExceptionHandler::class.java
+            ServerExceptionHandler::class.java,
+            DealHtml::class.java
         ))
 
         ServerRoom.onCreate()
