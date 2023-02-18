@@ -4,13 +4,10 @@ import android.app.Application
 import com.cool.cloudnotesserver.db.ServerRoom
 import com.cool.cloudnotesserver.requset.configuration.AuthConfig
 import com.cool.cloudnotesserver.requset.controller.AuthController
-import com.cool.cloudnotesserver.requset.controller.DealHtml
+import com.cool.cloudnotesserver.requset.controller.DealHtmlController
 import com.cool.cloudnotesserver.requset.controller.RootController
 import com.cool.cloudnotesserver.requset.exception.ServerExceptionHandler
 import com.jerry.request_core.Core
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class ServerApp: Application() {
     companion object{
@@ -29,7 +26,7 @@ class ServerApp: Application() {
             AuthController::class.java,
             AuthConfig::class.java,
             ServerExceptionHandler::class.java,
-            DealHtml::class.java
+            DealHtmlController::class.java
         ))
 
         ServerRoom.onCreate()

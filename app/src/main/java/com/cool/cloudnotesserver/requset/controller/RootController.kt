@@ -35,6 +35,7 @@ class RootController {
         if (userRequest==null){
             return ResponseMessage.error("need login parameter")
         }
+
         val userDao = ServerRoom.instance.getUserDao()
         val findByUserName = userDao.findByUserName(userRequest.username)
         if (findByUserName==null){
@@ -69,6 +70,14 @@ class RootController {
             return ResponseMessage.error("password can't be empty")
         }
 
+        if (userRequest.username.length<5){
+            return ResponseMessage.error("username length must more than 5")
+        }
+
+        if(!validatePassword(userRequest.password)){
+            return ResponseMessage.error("password so easy")
+        }
+
         val userDao = ServerRoom.instance.getUserDao()
         val findByUserName = userDao.findByUserName(userRequest.username)
         if (findByUserName==null){
@@ -80,5 +89,11 @@ class RootController {
         }else{
             return ResponseMessage.error("username is already be use,please change your username")
         }
+    }
+
+
+    private fun validatePassword(password: String): Boolean {
+        val passwordRegex = Regex("^(?=.*[0-9])(?=.*[a-zA-Z])(?=\\S+$).{8,}$")
+        return passwordRegex.matches(password)
     }
 }
