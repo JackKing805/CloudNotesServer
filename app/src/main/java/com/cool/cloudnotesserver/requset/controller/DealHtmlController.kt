@@ -21,10 +21,10 @@ class DealHtmlController {
         }catch (e:Exception){
             null
         }
-        if (authInfo==null){
-            return FileType.ASSETS.content + "login.html"
+        return if (authInfo==null){
+            FileType.ASSETS.content + "login.html"
         }else {
-            return FileType.ASSETS.content + "index.html"
+            FileType.ASSETS.content + "index.html"
         }
     }
 }

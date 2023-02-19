@@ -34,9 +34,39 @@
 	</style>
 </head>
 <body>
-<div class="container">
-  <video controls autoplay src="http://192.168.101.14:8080/video/handle/play?name=1.mp4"></video>
-  <div class="description">Amazing TikTok Video</div>
+<div class="container" id="container">
+
 </div>
 </body>
+
+<script>
+    // 生成 [min, max] 范围内的随机整数
+    function randomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+
+    var id = randomInt(1,18)
+    var container = document.getElementById("container");
+    container.innerHTML = '<video controls autoplay src="http://192.168.101.19:8080/video/handle/play?name='+id+'.mp4"></video>'
+
+    function submitLogin() {
+          var xhr = new XMLHttpRequest();
+          xhr.open("POST", "/login", true);
+          xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+          xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+              if (xhr.status === 200) {
+                window.location.replace('http://192.168.101.5:8080')
+              } else {
+                alert("Login failed!");
+              }
+            }
+          };
+          var username = document.getElementById("txt_username").value;
+          var password = document.getElementById("txt_password").value;
+          var data = JSON.stringify({ "username": username, "password": password });
+          xhr.send(data);
+        }
+</script>
 </html>
