@@ -1,8 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>TikTok Video Player</title>
-  <style>
+    <title>TikTok Video Player</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <style>
 		body {
 			margin: 0;
 			padding: 0;
@@ -19,8 +26,7 @@
 		}
 
 		video {
-			width: 90%;
-			max-width: 600px;
+			width: 100%;
 			border-radius: 8px;
 			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 		}
@@ -31,11 +37,82 @@
 			font-weight: bold;
 			color: #444;
 		}
-	</style>
+
+    </style>
+
+
+    <script>
+        $(function () {
+            //使用ajax传输表单内的formdata的文件
+            $("#upload").click(function () {
+                var files = document.getElementById("file").files;
+                //创建FormData对象
+                var formdata = new FormData();
+                //设置formdata,追加文件数据
+                for(var i=0;i<files.length;i++){
+                    console.info(files[i].name);
+                    formdata.append("file", files[i]);
+                }
+
+                //还可以添加后台所需要的其他数据，在后台方法中使用对应的键值即可接收
+                formdata.append("title","测试添加标题");
+                formdata.append("category","测试添加分类");
+
+                // debugger
+
+                //查看formdata中的数据
+                //这种方法只输出键值
+                for (var value of formdata.values()) {
+                    console.log(value);
+                }
+
+                //这种方法分别输出了键以及键值
+                for (var [a, b] of formdata.entries()) {
+                    console.log(a, b);
+                }
+
+                $.ajax({
+                    url: '/auth/file/save',
+                    type: 'POST',
+                    cache: false,
+                    data: formdata,
+                    //ajax2.0可以不用设置请求头，但是jq帮我们自动设置了，这样的话需要我们自己取消掉
+                    processData: false,
+                    //取消帮我们格式化数据，是什么就是什么
+                    contentType: false,
+                    success:function (res) {
+                        alert(res);
+                    }
+                });
+
+            });
+
+            //选择了文件确定后才会触发该事件,将文件名显示到下方
+            $("#file").change(function () {
+               console.info("change");
+                var files = document.getElementById("file").files;
+                var names="";
+                for(var i=0;i<files.length;i++){
+                    names+=files[i].name+"<br>"
+                }
+
+                $("#showFileDiv").html(names);
+
+            });
+
+
+        })
+
+    </script>
 </head>
 <body>
 <div class="container" id="container">
-
+    <!--使用表单提交文件-->
+    <!-- 可以选择多个文件：multiple="multiple"；accept：设置可选择的文件类型，用“,”分割多种类型 -->
+    <form id="uploadForm" class="form-inline" enctype="multipart/form-data">
+        <input id="file" type="file" class="form-control" name="file" multiple="multiple" accept=".pdf,.zip,.xls,.doc,.txt,.png,.jpg "/>
+        <button id="upload" type="button">upload</button>
+    </form>
 </div>
 </body>
 
@@ -45,10 +122,9 @@
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-
     var id = randomInt(1,18)
     var container = document.getElementById("container");
-    container.innerHTML = '<video controls autoplay src="http://192.168.101.19:8080/video/handle/play?name='+id+'.mp4"></video>'
+    container.innerHTML = container.innerHTML + '<video controls autoplay src="/auth/file/'+id+'.mp4"></video>'
 
     function submitLogin() {
           var xhr = new XMLHttpRequest();
@@ -68,5 +144,6 @@
           var data = JSON.stringify({ "username": username, "password": password });
           xhr.send(data);
         }
+
 </script>
 </html>
