@@ -17,8 +17,11 @@ interface NoteDao {
     @Query("select * from Note limit :start,:size")
     fun list(start:Int=0,size:Int = 10):List<Note>
 
+    @Query("select * from Note where id=:id")
+    fun listById(id:Long):Note?
+
     @Insert
-    fun insert(note : Note)
+    fun insert(note : Note):Long
 
     @Delete
     fun delete(note: Note)

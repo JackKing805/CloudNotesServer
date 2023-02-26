@@ -3,6 +3,8 @@ package com.cool.cloudnotesserver.requset.controller
 import android.content.Context
 import com.cool.cloudnotesserver.db.ServerRoom
 import com.cool.cloudnotesserver.db.entity.Note
+import com.cool.cloudnotesserver.db.entity.User
+import com.cool.cloudnotesserver.db.entity.UserNote
 import com.cool.cloudnotesserver.extensions.log
 import com.cool.cloudnotesserver.extensions.safeSubList
 import com.cool.cloudnotesserver.requset.model.ResponseMessage
@@ -11,6 +13,7 @@ import com.jerry.request_base.bean.RequestMethod
 import com.jerry.request_core.anno.PathQuery
 import com.jerry.request_core.bean.ParameterBean
 import com.jerry.request_core.constants.FileType
+import com.jerry.request_shiro.shiro.ShiroUtils
 import com.jerry.request_shiro.shiro.anno.ShiroRole
 import com.jerry.rt.core.http.pojo.Request
 import com.jerry.rt.core.http.pojo.Response
@@ -58,30 +61,41 @@ class AuthController {
     @Controller("/note/save", requestMethod = RequestMethod.POST, isRest = true)
     fun onNoteSaveRequest(request: Request,saveNote: SaveNote?):ResponseMessage{
         saveNote?:return ResponseMessage.error("error data")
-        ServerRoom.instance.getNoteDao().insert(Note(
-            title =saveNote.title,
-            content = saveNote.content,
-            lock = saveNote.lock,
-            type = saveNote.type
-        ))
+        val user = ShiroUtils.getAuthInfo(request).authenticationInfo.main as User
+        val insert = ServerRoom.instance.getNoteDao().insert(
+            Note(
+                title = saveNote.title,
+                content = saveNote.content,
+                lock = saveNote.lock,
+                type = saveNote.type
+            )
+        )
+        ServerRoom.instance.getUserNoteDao().insert(UserNote(userId = user.id, noteId = insert))
         return ResponseMessage.ok("save success")
     }
 
     @Controller("/note/list", isRest = true)
     fun onNotesRequest(request: Request,parameterBean: ParameterBean):ResponseMessage{
+        val user = ShiroUtils.getAuthInfo(request).authenticationInfo.main as User
         val start = parameterBean.parameters["start"]?.toInt()?:0
         val size = parameterBean.parameters["size"]?.toInt()?:10
         "onNotesRequest->start:$start,size:$size".log()
-        val list = ServerRoom.instance.getNoteDao().list().sortedBy { -it.lastModifyTime }
-        val subList = list.safeSubList(start, size)
-        return ResponseMessage.ok(subList)
+        val listByUserId = ServerRoom.instance.getUserNoteDao().listByUserId(user.id).sortedByDescending { it.createTime }
+        val safeSubList = listByUserId.safeSubList(start, size)
+        val noteDao = ServerRoom.instance.getNoteDao()
+        val list = mutableListOf<Note>()
+        safeSubList.forEach {
+            noteDao.listById(it.noteId)?.let {
+                list.add(it)
+            }
+        }
+        return ResponseMessage.ok(list)
     }
 
 
     @Controller("file/save", requestMethod = RequestMethod.POST, isRest = true)
     fun onFileUpload(files:List<MultipartFile>):ResponseMessage{
         files.forEach {
-            "${it.getHeader().getFileName()}".log()
             it.save()
         }
         return ResponseMessage.ok("upload success")
