@@ -18,7 +18,7 @@ class RtProtocolConfig {
             return "/rt/server"
         }
 
-        override fun onRtIn(client: Client, response: Response) {
+        override fun onRtIn(client: Client,request: Request, response: Response) {
             Log.e("WWWWW","onRtIn")
         }
 
@@ -28,7 +28,7 @@ class RtProtocolConfig {
             response.write(UUID.randomUUID().toString())
         }
 
-        override fun onRtOut(client: Client, response: Response) {
+        override fun onRtOut(client: Client) {
             Log.e("WWWWW","onRtOut")
         }
     }
