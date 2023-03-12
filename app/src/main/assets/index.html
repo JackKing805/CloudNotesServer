@@ -125,6 +125,7 @@
 
     var id = randomInt(1,18)
     var container = document.getElementById("container");
-    container.innerHTML = container.innerHTML + '<video controls autoplay src="/auth/file/'+id+'.mp4"></video>'
+<!--    container.innerHTML = container.innerHTML + '<video controls autoplay src="/auth/file/'+id+'.mp4"></video>'-->
+    container.innerHTML = container.innerHTML + '<video controls autoplay src="http://192.168.101.9:8080/video/handle/play?name='+id+'.mp4"></video>'
 </script>
 </html>
