@@ -1,6 +1,7 @@
 package com.cool.cloudnotesserver.requset.controller
 
 import android.content.Context
+import com.blankj.utilcode.util.NetworkUtils
 import com.cool.cloudnotesserver.db.ServerRoom
 import com.cool.cloudnotesserver.db.entity.Note
 import com.cool.cloudnotesserver.db.entity.ServerFileRecord
@@ -12,6 +13,7 @@ import com.cool.cloudnotesserver.requset.model.ResponseMessage
 import com.jerry.request_base.annotations.Controller
 import com.jerry.request_base.annotations.Inject
 import com.jerry.request_base.bean.RequestMethod
+import com.jerry.request_core.Core
 import com.jerry.request_core.anno.PathQuery
 import com.jerry.request_core.bean.ParameterBean
 import com.jerry.request_core.constants.FileType
@@ -102,17 +104,41 @@ class AuthController {
     @Controller("/file/save", requestMethod = RequestMethod.POST, isRest = true)
     fun onFileUpload(files:List<MultipartFile>):ResponseMessage{
         files.forEach {
-            it.save()
+            val save = it.save()
+            db.getServerFileRecordDao().insert(ServerFileRecord(name = save.name, path = save.absolutePath, size = save.length()))
         }
         return ResponseMessage.ok("upload success")
     }
 
     @Controller("/file/{name}")
     fun getFile(@PathQuery("name") name:String?="1.mp4"):String{
-        "ADas:$name".log()
-        return FileType.APP_FILE.content +"save/"+ name
+        if (name==null){
+            return ""
+        }
+
+        val listByName = db.getServerFileRecordDao().listByName(name).firstOrNull() ?: return ""
+        return FileType.SD_CARD.content + listByName.path
     }
 
+    @Controller("/file/list", isRest = true)
+    fun getFileList():ResponseMessage{
+        val list = mutableListOf<String>()
+        val dbResult = db.getServerFileRecordDao().list()
+
+        val ip = NetworkUtils.getIpAddressByWifi().toString()
+        val enabledSSl = Core.getRtConfig().rtSSLConfig!=null
+        val port = Core.getRtConfig().port
+        val prefix = if (enabledSSl){
+            "https://$ip:$port"
+        }else{
+            "http://$ip:$port"
+        }+ "/auth/file/"
+
+        dbResult.forEach {
+            list.add(prefix + it.name)
+        }
+        return ResponseMessage.ok(list)
+    }
 
     @Controller(value = "/user/roles", requestMethod = RequestMethod.GET,isRest = true)
     fun getRoles(request: Request):ResponseMessage{

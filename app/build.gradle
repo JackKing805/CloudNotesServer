@@ -118,7 +118,7 @@ dependencies {
     //server
     implementation 'com.github.JackKing805:RtCore:0.5.6'
     implementation 'com.github.JackKing805:request_base:0.2.0'
-    implementation 'com.github.JackKing805:request_core:0.4.5'
+    implementation 'com.github.JackKing805:request_core:0.4.6'
     implementation 'com.github.JackKing805:request_shiro:0.1.5'
 
 

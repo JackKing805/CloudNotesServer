@@ -13,6 +13,9 @@ interface ServerFileRecordDao {
     @Query("select * from ServerFileRecord")
     fun list():List<ServerFileRecord>
 
+    @Query("select * from ServerFileRecord where name=:name")
+    fun listByName(name:String):List<ServerFileRecord>
+
     @Query("select * from ServerFileRecord")
     fun listAsFlow():Flow<List<ServerFileRecord>>
 
